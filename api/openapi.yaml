@@ -1,0 +1,6314 @@
+openapi: 3.1.0
+info:
+  description: "API to access Odin Fleet, empowering developers to deploy gameservers\
+    \ all around the world in just a few lines of code.\n\nTo authenticate, users\
+    \ must send their email, password, and session ID to the **[`/api/auth`](/operations/getAuthToken)**\
+    \ endpoint. Upon successful authentication, an API token will be provided. This\
+    \ token should be included in the `Authorization` header as a Bearer token for\
+    \ all subsequent requests.\n    \nAlternatively, you can copy your API key directly\
+    \ from our **[`console`](https://console.4players.io)** by opening any app, and\
+    \ then going to **Settings -> API Keys**."
+  title: ODIN Fleet API
+  version: 0.9.2
+servers:
+- description: production
+  url: https://fleet.4players.io/api
+paths:
+  /v1/app-location-settings/{appLocationSetting}:
+    delete:
+      operationId: deleteAppLocationSetting
+      parameters:
+      - description: The app location setting ID
+        explode: false
+        in: path
+        name: appLocationSetting
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "204":
+          description: No content
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Delete a location setting
+      tags:
+      - AppLocationSettings
+      - AppLocationSetting
+    get:
+      operationId: getAppLocationSettingById
+      parameters:
+      - description: The app location setting ID
+        explode: false
+        in: path
+        name: appLocationSetting
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppLocationSetting"
+          description: '`AppLocationSetting`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Show a specific app location setting
+      tags:
+      - AppLocationSettings
+      - AppLocationSetting
+    put:
+      operationId: updateAppLocationSetting
+      parameters:
+      - description: The app location setting ID
+        explode: false
+        in: path
+        name: appLocationSetting
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAppLocationSettingRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppLocationSetting"
+          description: '`AppLocationSetting`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+      summary: Update a location setting
+      tags:
+      - AppLocationSettings
+      - AppLocationSetting
+  /v1/app-location-settings/{appLocationSetting}/services/start:
+    post:
+      operationId: startServersForAppLocationSetting
+      parameters:
+      - description: The app location setting ID
+        explode: false
+        in: path
+        name: appLocationSetting
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Start all services related to a specific app location setting
+      tags:
+      - AppLocationSettings
+      - AppLocationSetting
+  /v1/app-location-settings/{appLocationSetting}/services/stop:
+    post:
+      operationId: stopServersForAppLocationSetting
+      parameters:
+      - description: The app location setting ID
+        explode: false
+        in: path
+        name: appLocationSetting
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Stop all services related to a specific app location setting
+      tags:
+      - AppLocationSettings
+      - AppLocationSetting
+  /v1/apps/{app}/location-settings:
+    get:
+      operationId: getAppLocationSettings
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - description: The number of items to be shown per page.
+        explode: true
+        in: query
+        name: perPage
+        required: false
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      - description: Specifies the page number to retrieve in the paginated results.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: |-
+          Allows sorting of results. By default, sorting is in ascending order. To reverse the order, prepend the sort key with a hyphen (-).
+
+          **Simple Sort:** To sort by id in ascending order or by name in descending order:
+
+          ```
+          sort[]=id
+          sort[]=-name
+          ```
+
+          **Multiple Sorts:** Combine multiple sorts by separating them with commas:
+          ```
+          sort[]=id&sort[]=-name
+          ```
+        explode: true
+        in: query
+        name: "sort[]"
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - description: Filter by id.
+        explode: true
+        in: query
+        name: "filter[id]"
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter by name.
+        explode: true
+        in: query
+        name: "filter[name]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "Filter by name using partial matching. For example, \"ann\"\
+          \ matches \"Joanna\" or \"Annie\"."
+        explode: true
+        in: query
+        name: "filter[namePartial]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by ServerConfig ID.
+        explode: true
+        in: query
+        name: "filter[serverConfigId]"
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter by number of instances.
+        explode: true
+        in: query
+        name: "filter[numInstances]"
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter by status.
+        explode: true
+        in: query
+        name: "filter[status]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by maintenance.
+        explode: true
+        in: query
+        name: "filter[maintenance]"
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: Filter by location city.
+        explode: true
+        in: query
+        name: "filter[locationCity]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by location city display name.
+        explode: true
+        in: query
+        name: "filter[locationCityDisplay]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by location continent.
+        explode: true
+        in: query
+        name: "filter[locationContinent]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by location country.
+        explode: true
+        in: query
+        name: "filter[locationCountry]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by ServerConfig name.
+        explode: true
+        in: query
+        name: "filter[serverConfigName]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by ServerConfig command.
+        explode: true
+        in: query
+        name: "filter[serverConfigCommand]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by ServerConfig arguments.
+        explode: true
+        in: query
+        name: "filter[serverConfigArgs]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by ServerConfig notes.
+        explode: true
+        in: query
+        name: "filter[serverConfigNotes]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by ServerConfig status.
+        explode: true
+        in: query
+        name: "filter[serverConfigStatus]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by ServerConfig maintenance.
+        explode: true
+        in: query
+        name: "filter[serverConfigMaintenance]"
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: Filter by ServerConfig resource package slug.
+        explode: true
+        in: query
+        name: "filter[serverConfigResourcePackageSlug]"
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getAppLocationSettings_200_response"
+          description: Paginated set of `AppLocationSetting`
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Show all location settings
+      tags:
+      - AppLocationSettings
+      - AppLocationSetting
+    post:
+      operationId: createAppLocationSetting
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreAppLocationSettingRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppLocationSetting"
+          description: '`AppLocationSetting`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+      summary: Create a new location setting
+      tags:
+      - AppLocationSettings
+      - AppLocationSetting
+  /v1/apps/{app}/location-settings/{appLocationSetting}/services:
+    get:
+      operationId: listServicesForAppLocationSetting
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - description: The app location setting ID
+        explode: false
+        in: path
+        name: appLocationSetting
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Server"
+                type: array
+          description: Array of `CustomDockerService`
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Show all services for a specific app location setting within a given
+        app
+      tags:
+      - AppLocationSettings
+      - AppLocationSetting
+  /v1/apps:
+    get:
+      operationId: getApps
+      parameters:
+      - description: The number of items to be shown per page.
+        explode: true
+        in: query
+        name: perPage
+        required: false
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      - description: Specifies the page number to retrieve in the paginated results.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: |-
+          Allows sorting of results. By default, sorting is in ascending order. To reverse the order, prepend the sort key with a hyphen (-).
+
+          **Simple Sort:** To sort by id in ascending order or by name in descending order:
+
+          ```
+          sort[]=id
+          sort[]=-name
+          ```
+
+          **Multiple Sorts:** Combine multiple sorts by separating them with commas:
+          ```
+          sort[]=id&sort[]=-name
+          ```
+        explode: true
+        in: query
+        name: "sort[]"
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - description: Filter by id.
+        explode: true
+        in: query
+        name: "filter[id]"
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter by name.
+        explode: true
+        in: query
+        name: "filter[name]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "Filter by name using partial matching. For example, \"ann\"\
+          \ matches \"Joanna\" or \"Annie\"."
+        explode: true
+        in: query
+        name: "filter[namePartial]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by in use flag.
+        explode: true
+        in: query
+        name: "filter[inUse]"
+        required: false
+        schema:
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getApps_200_response"
+          description: Paginated set of `App`
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+      summary: Show all apps
+      tags:
+      - Apps
+      - App
+    post:
+      operationId: createApp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreAppRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/App"
+          description: '`App`'
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+      summary: Create an app
+      tags:
+      - Apps
+      - App
+  /v1/apps/{app}:
+    delete:
+      operationId: deleteApp
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Delete a specific app
+      tags:
+      - Apps
+      - App
+    get:
+      operationId: getAppById
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/App"
+          description: '`App`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Show a specific app
+      tags:
+      - Apps
+      - App
+    put:
+      operationId: updateAppById
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAppRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/App"
+          description: '`App`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Update a specific app
+      tags:
+      - Apps
+      - App
+  /v1/apps/{app}/services/start:
+    post:
+      operationId: startServersForApp
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Start all services related to a specific app
+      tags:
+      - Apps
+      - App
+  /v1/apps/{app}/services/stop:
+    post:
+      operationId: stopServersForApp
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Stop all services related to a specific app
+      tags:
+      - Apps
+      - App
+  /v1/apps/{app}/wallets:
+    get:
+      operationId: getAppWallets
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - description: The number of items to be shown per page.
+        explode: true
+        in: query
+        name: perPage
+        required: false
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      - description: Specifies the page number to retrieve in the paginated results.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: |-
+          Allows sorting of results. By default, sorting is in ascending order. To reverse the order, prepend the sort key with a hyphen (-).
+
+          **Simple Sort:** To sort by id in ascending order or by name in descending order:
+
+          ```
+          sort[]=id
+          sort[]=-name
+          ```
+
+          **Multiple Sorts:** Combine multiple sorts by separating them with commas:
+          ```
+          sort[]=id&sort[]=-name
+          ```
+        explode: true
+        in: query
+        name: "sort[]"
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - description: Filter by id.
+        explode: true
+        in: query
+        name: "filter[id]"
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter by balance.
+        explode: true
+        in: query
+        name: "filter[balance]"
+        required: false
+        schema:
+          type: number
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getAppWallets_200_response"
+          description: Paginated set of `Wallet`
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Show all wallets for a specific app
+      tags:
+      - Apps
+      - App
+  /v1/apps/unused:
+    delete:
+      operationId: deleteUnusedApps
+      responses:
+        "202":
+          description: ""
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Delete all unused apps
+      tags:
+      - Apps
+      - App
+  /v1/auth/token:
+    post:
+      description: |-
+        Authenticates the user based on the user's email, password, and session ID.
+        If the user is authenticated successfully, it returns the user's token.
+
+        The token is non-expiring and must be used as a Bearer token in subsequent requests.
+      operationId: getAuthToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Auth"
+          description: '`Auth`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Get token
+      tags:
+      - Auth
+    put:
+      operationId: refreshAuthToken
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Auth"
+          description: '`Auth`'
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Refresh token
+      tags:
+      - Auth
+  /v1/apps/{app}/binaries:
+    get:
+      operationId: getBinaries
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - description: The number of items to be shown per page.
+        explode: true
+        in: query
+        name: perPage
+        required: false
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      - description: Specifies the page number to retrieve in the paginated results.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: |-
+          Allows sorting of results. By default, sorting is in ascending order. To reverse the order, prepend the sort key with a hyphen (-).
+
+          **Simple Sort:** To sort by id in ascending order or by name in descending order:
+
+          ```
+          sort[]=id
+          sort[]=-name
+          ```
+
+          **Multiple Sorts:** Combine multiple sorts by separating them with commas:
+          ```
+          sort[]=id&sort[]=-name
+          ```
+        explode: true
+        in: query
+        name: "sort[]"
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - description: Filter by name.
+        explode: true
+        in: query
+        name: "filter[name]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "Filter by name using partial matching. For example, \"ann\"\
+          \ matches \"Joanna\" or \"Annie\"."
+        explode: true
+        in: query
+        name: "filter[namePartial]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by version.
+        explode: true
+        in: query
+        name: "filter[version]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by type.
+        explode: true
+        in: query
+        name: "filter[type]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by operating system.
+        explode: true
+        in: query
+        name: "filter[os]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by maintenance status.
+        explode: true
+        in: query
+        name: "filter[maintenance]"
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: Filter by status.
+        explode: true
+        in: query
+        name: "filter[status]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by in use flag.
+        explode: true
+        in: query
+        name: "filter[inUse]"
+        required: false
+        schema:
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getBinaries_200_response"
+          description: Paginated set of `Binary`
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Show all binaries
+      tags:
+      - Binaries
+      - Binary
+    post:
+      operationId: createBinary
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreBinaryRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Binary"
+          description: '`Binary`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Create a binary and the related entity
+      tags:
+      - Binaries
+      - Binary
+  /v1/apps/{app}/binaries/unused:
+    delete:
+      operationId: deleteUnusedBinaries
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Delete all unused binaries
+      tags:
+      - Binaries
+      - Binary
+  /v1/binaries/{binary}:
+    delete:
+      operationId: deleteBinary
+      parameters:
+      - description: The binary ID
+        explode: false
+        in: path
+        name: binary
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "204":
+          description: No content
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Delete a specified binary
+      tags:
+      - Binaries
+      - Binary
+    get:
+      operationId: getBinaryById
+      parameters:
+      - description: The binary ID
+        explode: false
+        in: path
+        name: binary
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Binary"
+          description: '`Binary`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Show a specific binary
+      tags:
+      - Binaries
+      - Binary
+    put:
+      operationId: updateBinary
+      parameters:
+      - description: The binary ID
+        explode: false
+        in: path
+        name: binary
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBinaryRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Binary"
+          description: '`Binary`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Update a binary and the related entity
+      tags:
+      - Binaries
+      - Binary
+  /v1/binaries/{binary}/refresh:
+    put:
+      operationId: refreshBinary
+      parameters:
+      - description: The binary ID
+        explode: false
+        in: path
+        name: binary
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Binary"
+          description: '`Binary`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Refresh a binary and the related entity
+      tags:
+      - Binaries
+      - Binary
+  /v1/binaries/{binary}/services/start:
+    post:
+      operationId: startServersForBinary
+      parameters:
+      - description: The binary ID
+        explode: false
+        in: path
+        name: binary
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Start all services related to a specific binary
+      tags:
+      - Binaries
+      - Binary
+  /v1/binaries/{binary}/services/stop:
+    post:
+      operationId: stopServersForBinary
+      parameters:
+      - description: The binary ID
+        explode: false
+        in: path
+        name: binary
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Stop all services related to a specific binary
+      tags:
+      - Binaries
+      - Binary
+  /v1/apps/{app}/services:
+    get:
+      operationId: getServers
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - description: The number of items to be shown per page.
+        explode: true
+        in: query
+        name: perPage
+        required: false
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      - description: Specifies the page number to retrieve in the paginated results.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter by status.
+        explode: true
+        in: query
+        name: "filter[status]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by AppLocationSetting ID.
+        explode: true
+        in: query
+        name: "filter[appLocationSettingId]"
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter by ServerConfig ID.
+        explode: true
+        in: query
+        name: "filter[serverConfigId]"
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter by ServerConfig name.
+        explode: true
+        in: query
+        name: "filter[serverConfigName]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "Filter by ServerConfig name using partial matching. For example,\
+          \ \"ann\" matches \"Joanna\" or \"Annie\"."
+        explode: true
+        in: query
+        name: "filter[serverConfigNamePartial]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by location city.
+        explode: true
+        in: query
+        name: "filter[locationCity]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by location city display name.
+        explode: true
+        in: query
+        name: "filter[locationCityDisplay]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by location continent.
+        explode: true
+        in: query
+        name: "filter[locationContinent]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by location country.
+        explode: true
+        in: query
+        name: "filter[locationCountry]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by whether the service can be backed up.
+        explode: true
+        in: query
+        name: "filter[isBackupable]"
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: Filter by whether the service can be restored.
+        explode: true
+        in: query
+        name: "filter[isRestorable]"
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: Filter by whether the service is pending (not running) due to
+          insufficient resources on the node.
+        explode: true
+        in: query
+        name: "filter[isPending]"
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: Filter by whether the service is not found/missing in the cluster.
+        explode: true
+        in: query
+        name: "filter[isNotFound]"
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: Filter by whether the service is currently in an overall healthy
+          state.
+        explode: true
+        in: query
+        name: "filter[isHealthy]"
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: Filter by Binary ID.
+        explode: true
+        in: query
+        name: "filter[binaryId]"
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter by whether the service is currenctly stopped.
+        explode: true
+        in: query
+        name: "filter[isStopped]"
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: |-
+          Filter by metadata. Allows filtering based on metadata key-value pairs, supporting both simple and nested metadata fields using dot notation.
+
+          **Simple Filters:**
+          To filter where `idle` is false (boolean):
+          ```
+          filter[metadata]=idle=false
+          ```
+
+          To filter where `string` is exactly "a":
+          ```
+          filter[metadata]=string="a"
+          ```
+
+          **Filtering for Null Values:**
+          To filter for a native null value, use unquoted null. For example, to filter where `score` is null:
+          ```
+          filter[metadata]=score=null
+          ```
+
+          **Nested Filters:**
+          For nested metadata fields use dot notation. For example, to filter where `difficulty` within `gameSettings.survival`
+          is exactly "hardcore":
+          ```
+          filter[metadata]=gameSettings.survival.difficulty="hardcore"
+          ```
+
+          To filter for a nested field with a native `null` value, leave the null unquoted:
+          ```
+          filter[metadata]=gameSettings.stats.score=null
+          ```
+
+          **Array Contains Filter:**
+          To filter where an array contains a given value (string, number, boolean or null):
+          ```
+          filter[metadata]=players="foobar"
+          filter[metadata]=player_ids=37
+          filter[metadata]=array=true
+          filter[metadata]=array=null
+          ```
+
+          Works for nested arrays as well:
+          ```
+          filter[metadata]=gameData.players="foobar"
+          ```
+
+          **Multiple Filters:**
+          Combine multiple filters by separating them with commas:
+          ```
+          filter[metadata]=idle=false,max_players=20,gameSettings.survival.difficulty="hardcore"
+          ```
+        explode: true
+        in: query
+        name: "filter[metadata]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: |-
+          Allows sorting of results. By default, sorting is in ascending order. To reverse the order, prepend the sort key with a hyphen (-).
+
+          **Simple Sort:** To sort by id in ascending order or by instance in descending order:
+
+          ```
+          sort[]=id
+          sort[]=-instance
+          ```
+
+          **Multiple Sorts:** Combine multiple sorts by separating them with commas:
+          ```
+          sort[]=id&sort[]=-instance
+          ```
+        explode: true
+        in: query
+        name: "sort[]"
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getServers_200_response"
+          description: Paginated set of `CustomDockerService`
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: List services
+      tags:
+      - Docker
+      - DockerService
+  /v1/apps/{app}/services/{dockerService}:
+    get:
+      operationId: getServerById
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - description: The docker service ID
+        explode: false
+        in: path
+        name: dockerService
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Server"
+          description: '`Server`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Display a specific service
+      tags:
+      - Docker
+      - DockerService
+  /v1/docker-registries:
+    get:
+      operationId: getDockerRegistries
+      parameters:
+      - description: The number of items to be shown per page.
+        explode: true
+        in: query
+        name: perPage
+        required: false
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      - description: Specifies the page number to retrieve in the paginated results.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: |-
+          Allows sorting of results. By default, sorting is in ascending order. To reverse the order, prepend the sort key with a hyphen (-).
+
+          **Simple Sort:** To sort by id in ascending order or by name in descending order:
+
+          ```
+          sort[]=id
+          sort[]=-name
+          ```
+
+          **Multiple Sorts:** Combine multiple sorts by separating them with commas:
+          ```
+          sort[]=id&sort[]=-name
+          ```
+        explode: true
+        in: query
+        name: "sort[]"
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - description: Filter by id.
+        explode: true
+        in: query
+        name: "filter[id]"
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter by type.
+        explode: true
+        in: query
+        name: "filter[type]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by name.
+        explode: true
+        in: query
+        name: "filter[name]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "Filter by name using partial matching. For example, \"ann\"\
+          \ matches \"Joanna\" or \"Annie\"."
+        explode: true
+        in: query
+        name: "filter[namePartial]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by url.
+        explode: true
+        in: query
+        name: "filter[url]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by organization.
+        explode: true
+        in: query
+        name: "filter[organization]"
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getDockerRegistries_200_response"
+          description: Paginated set of `DockerRegistry`
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+      summary: Show all docker registries
+      tags:
+      - Docker
+      - DockerRegistry
+    post:
+      operationId: createDockerRegistry
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreDockerRegistryRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DockerRegistry"
+          description: '`DockerRegistry`'
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+      summary: Create a new docker registry
+      tags:
+      - Docker
+      - DockerRegistry
+  /v1/docker-registries/{dockerRegistry}:
+    delete:
+      operationId: deleteDockerRegistry
+      parameters:
+      - description: The docker registry ID
+        explode: false
+        in: path
+        name: dockerRegistry
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "204":
+          description: No content
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Delete a specific docker registry
+      tags:
+      - Docker
+      - DockerRegistry
+    get:
+      operationId: getDockerRegistryById
+      parameters:
+      - description: The docker registry ID
+        explode: false
+        in: path
+        name: dockerRegistry
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DockerRegistry"
+          description: '`DockerRegistry`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Display a specific docker registry
+      tags:
+      - Docker
+      - DockerRegistry
+    put:
+      operationId: updateDockerRegistry
+      parameters:
+      - description: The docker registry ID
+        explode: false
+        in: path
+        name: dockerRegistry
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDockerRegistryRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DockerRegistry"
+          description: '`DockerRegistry`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Update a specific docker registry
+      tags:
+      - Docker
+      - DockerRegistry
+  /v1/docker-registries/{dockerRegistry}/tagged-images:
+    get:
+      operationId: getTaggedImages
+      parameters:
+      - description: The docker registry ID
+        explode: false
+        in: path
+        name: dockerRegistry
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getTaggedImages_200_response"
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: List all available tagged images
+      tags:
+      - Docker
+      - DockerRegistry
+  /v1/docker-registries/{dockerRegistry}/tagged-images/refresh:
+    get:
+      operationId: refreshTaggedImages
+      parameters:
+      - description: The docker registry ID
+        explode: false
+        in: path
+        name: dockerRegistry
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getTaggedImages_200_response"
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Refresh the cache for all available tagged images
+      tags:
+      - Docker
+      - DockerRegistry
+  /v1/services/{dockerService}/logs:
+    get:
+      operationId: getServerLogs
+      parameters:
+      - description: The docker service ID
+        explode: false
+        in: path
+        name: dockerService
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - description: "The max number of entries to return. Default: 100"
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: |-
+          Determines the sort order of logs. Supported values are forward or backward.
+          Default: forward
+        explode: true
+        in: query
+        name: direction
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "Only return logs filtered by stream source like stdout or stderr.\
+          \ Default: null"
+        explode: true
+        in: query
+        name: streamSource
+        required: false
+        schema:
+          enum:
+          - stdout
+          - stderr
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceLogs"
+          description: '`ServiceLogs`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Get service logs
+      tags:
+      - Docker
+      - DockerService
+  /v1/services/{dockerService}/logs/download:
+    get:
+      operationId: downloadServerLogs
+      parameters:
+      - description: The docker service ID
+        explode: false
+        in: path
+        name: dockerService
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - description: Only return logs filtered by stream source like stdout or stderr.
+        explode: true
+        in: query
+        name: streamSource
+        required: false
+        schema:
+          enum:
+          - stdout
+          - stderr
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceLogs"
+          description: '`ServiceLogs`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Download service logs
+      tags:
+      - Docker
+      - DockerService
+  /v1/services/{dockerService}/backup:
+    get:
+      operationId: getLatestBackup
+      parameters:
+      - description: The docker service ID
+        explode: false
+        in: path
+        name: dockerService
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Backup"
+          description: '`Backup`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Get latest service backup
+      tags:
+      - Docker
+      - DockerService
+    post:
+      operationId: createBackup
+      parameters:
+      - description: The docker service ID
+        explode: false
+        in: path
+        name: dockerService
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBackupDockerServiceRequest"
+        required: true
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+      summary: Create service backup
+      tags:
+      - Docker
+      - DockerService
+  /v1/services/{dockerService}/restore:
+    post:
+      operationId: restoreBackup
+      parameters:
+      - description: The docker service ID
+        explode: false
+        in: path
+        name: dockerService
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Restore latest service backup
+      tags:
+      - Docker
+      - DockerService
+  /v1/services/{dockerService}/backups:
+    get:
+      operationId: getBackups
+      parameters:
+      - description: The docker service ID
+        explode: false
+        in: path
+        name: dockerService
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - description: The number of items to be shown per page.
+        explode: true
+        in: query
+        name: perPage
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Specifies the page number to retrieve in the paginated results.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: |-
+          Allows sorting of results. By default, sorting is in ascending order. To reverse the order, prepend the sort key with a hyphen (-).
+
+          **Simple Sort:** For example, to sort by name in ascending order or by archiveName in descending order:
+
+          ```
+          sort[]=name
+          sort[]=-archiveName
+          ```
+
+          **Multiple Sorts:** Combine multiple sorts by separating them with commas:
+          ```
+          sort[]=name&sort[]=-archiveName
+          ```
+        explode: true
+        in: query
+        name: "sort[]"
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - description: Filter by name.
+        explode: true
+        in: query
+        name: "filter[name]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by archive name.
+        explode: true
+        in: query
+        name: "filter[archiveName]"
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getBackups_200_response"
+          description: Paginated set of `DockerBackup`
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: List service backups
+      tags:
+      - Docker
+      - DockerService
+  /v1/services/{dockerService}/backup/download:
+    get:
+      operationId: getServerBackupDownloadUrl
+      parameters:
+      - description: The docker service ID
+        explode: false
+        in: path
+        name: dockerService
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BackupDownload"
+          description: '`BackupDownload`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Get service backup download URL
+      tags:
+      - Docker
+      - DockerService
+  /v1/services/{dockerService}/restart:
+    post:
+      operationId: restartServer
+      parameters:
+      - description: The docker service ID
+        explode: false
+        in: path
+        name: dockerService
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Restart service
+      tags:
+      - Docker
+      - DockerService
+  /v1/services/{dockerService}/metadata:
+    delete:
+      operationId: docker-services.metadata.delete.all
+      parameters:
+      - description: The docker service ID
+        explode: false
+        in: path
+        name: dockerService
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Server"
+          description: '`Server`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Delete all service metadata
+      tags:
+      - Docker
+      - DockerService
+    patch:
+      description: Updates existing metadata keys or adds new keys without deleting
+        metadata that is not mentioned.
+      operationId: docker-services.metadata.update
+      parameters:
+      - description: The docker service ID
+        explode: false
+        in: path
+        name: dockerService
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchMetadataRequest"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Server"
+          description: '`Server`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Update service metadata
+      tags:
+      - Docker
+      - DockerService
+    put:
+      description: Replaces the entire metadata set with only the values provided
+        in the request.
+      operationId: docker-services.metadata.set
+      parameters:
+      - description: The docker service ID
+        explode: false
+        in: path
+        name: dockerService
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetMetadataRequest"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Server"
+          description: '`Server`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Set service metadata
+      tags:
+      - Docker
+      - DockerService
+  /v1/services/{dockerService}/metadata/keys:
+    delete:
+      operationId: docker-services.metadata.delete.keys
+      parameters:
+      - description: The docker service ID
+        explode: false
+        in: path
+        name: dockerService
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - explode: true
+        in: query
+        name: "metadata[]"
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Server"
+          description: '`Server`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Delete service metadata keys
+      tags:
+      - Docker
+      - DockerService
+  /v1/services/{dockerService}/start:
+    post:
+      operationId: startServer
+      parameters:
+      - description: The docker service ID
+        explode: false
+        in: path
+        name: dockerService
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Start service
+      tags:
+      - Docker
+      - DockerService
+  /v1/services/{dockerService}/stop:
+    post:
+      operationId: stopServer
+      parameters:
+      - description: The docker service ID
+        explode: false
+        in: path
+        name: dockerService
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Stop service
+      tags:
+      - Docker
+      - DockerService
+  /v1/nodes/locations:
+    get:
+      operationId: getLocations
+      parameters:
+      - description: The number of items to be shown per page.
+        explode: true
+        in: query
+        name: perPage
+        required: false
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      - description: Specifies the page number to retrieve in the paginated results.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getLocations_200_response"
+          description: Paginated set of `Location`
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+      summary: Show a unique listing of locations based on active and ready worker
+        nodes
+      tags:
+      - Nodes
+      - DockerNode
+  /v1/resource-packages:
+    get:
+      operationId: getResourcePackages
+      parameters:
+      - description: The number of items to be shown per page.
+        explode: true
+        in: query
+        name: perPage
+        required: false
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      - description: Specifies the page number to retrieve in the paginated results.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: |-
+          Allows sorting of results. By default, sorting is in ascending order. To reverse the order, prepend the sort key with a hyphen (-).
+
+          **Simple Sort:** To sort by id in ascending order or by name in descending order:
+
+          ```
+          sort[]=id
+          sort[]=-name
+          ```
+
+          **Multiple Sorts:** Combine multiple sorts by separating them with commas:
+          ```
+          sort[]=id&sort[]=-name
+          ```
+        explode: true
+        in: query
+        name: "sort[]"
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - description: Filter by id.
+        explode: true
+        in: query
+        name: "filter[id]"
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter by name.
+        explode: true
+        in: query
+        name: "filter[name]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "Filter by name using partial matching. For example, \"ann\"\
+          \ matches \"Joanna\" or \"Annie\"."
+        explode: true
+        in: query
+        name: "filter[namePartial]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by slug.
+        explode: true
+        in: query
+        name: "filter[slug]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by type.
+        explode: true
+        in: query
+        name: "filter[type]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by CPU limit. Maps to the `cpu_limit` column.
+        explode: true
+        in: query
+        name: "filter[cpuLimit]"
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter by memory limit in MiB. Maps to the `memory_limit_mebibytes`
+          column.
+        explode: true
+        in: query
+        name: "filter[memoryLimitMiB]"
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getResourcePackages_200_response"
+          description: Paginated set of `Package`
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+      summary: Show all available resource packages
+      tags:
+      - ResourcePackage
+  /v1/resource-packages/{resourcePackage}:
+    get:
+      operationId: getResourcePackageById
+      parameters:
+      - description: The resource package ID
+        explode: false
+        in: path
+        name: resourcePackage
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourcePackage"
+          description: '`Package`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Show a specified resource package
+      tags:
+      - ResourcePackage
+  /v1/apps/{app}/configs:
+    get:
+      operationId: getServerConfigs
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - description: The number of items to be shown per page.
+        explode: true
+        in: query
+        name: perPage
+        required: false
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      - description: Specifies the page number to retrieve in the paginated results.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: |-
+          Allows sorting of results. By default, sorting is in ascending order. To reverse the order, prepend the sort key with a hyphen (-).
+
+          **Simple Sort:** To sort by id in ascending order or by name in descending order:
+
+          ```
+          sort[]=id
+          sort[]=-name
+          ```
+
+          **Multiple Sorts:** Combine multiple sorts by separating them with commas:
+          ```
+          sort[]=id&sort[]=-name
+          ```
+        explode: true
+        in: query
+        name: "sort[]"
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - description: Filter by id.
+        explode: true
+        in: query
+        name: "filter[id]"
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter by binary id.
+        explode: true
+        in: query
+        name: "filter[binaryId]"
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter by name.
+        explode: true
+        in: query
+        name: "filter[name]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "Filter by name using partial matching. For example, \"ann\"\
+          \ matches \"Joanna\" or \"Annie\"."
+        explode: true
+        in: query
+        name: "filter[namePartial]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by command.
+        explode: true
+        in: query
+        name: "filter[command]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by arguments.
+        explode: true
+        in: query
+        name: "filter[args]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by notes.
+        explode: true
+        in: query
+        name: "filter[notes]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by status.
+        explode: true
+        in: query
+        name: "filter[status]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by maintenance status.
+        explode: true
+        in: query
+        name: "filter[maintenance]"
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: Filter by resource package slug.
+        explode: true
+        in: query
+        name: "filter[resourcePackageSlug]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by in use flag.
+        explode: true
+        in: query
+        name: "filter[inUse]"
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: Filter by binary name.
+        explode: true
+        in: query
+        name: "filter[binaryName]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by binary version.
+        explode: true
+        in: query
+        name: "filter[binaryVersion]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by binary type.
+        explode: true
+        in: query
+        name: "filter[binaryType]"
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by binary operating system.
+        explode: true
+        in: query
+        name: "filter[binaryOs]"
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getServerConfigs_200_response"
+          description: Paginated set of `ServerConfig`
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Show all server configs
+      tags:
+      - ServerConfig
+    post:
+      operationId: createServerConfig
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreServerConfigRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerConfig"
+          description: '`ServerConfig`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Create a new server config
+      tags:
+      - ServerConfig
+  /v1/apps/{app}/configs/unused:
+    delete:
+      operationId: deleteUnusedServerConfigs
+      parameters:
+      - description: The app ID
+        explode: false
+        in: path
+        name: app
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Delete all unused server configs
+      tags:
+      - ServerConfig
+  /v1/server-configs/{serverConfig}:
+    delete:
+      operationId: deleteServerConfig
+      parameters:
+      - description: The server config ID
+        explode: false
+        in: path
+        name: serverConfig
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "204":
+          description: No content
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Delete a specific server config
+      tags:
+      - ServerConfig
+    get:
+      operationId: getServerConfigById
+      parameters:
+      - description: The server config ID
+        explode: false
+        in: path
+        name: serverConfig
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerConfig"
+          description: '`ServerConfig`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Show a specific server config
+      tags:
+      - ServerConfig
+    put:
+      operationId: updateServerConfig
+      parameters:
+      - description: The server config ID
+        explode: false
+        in: path
+        name: serverConfig
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateServerConfigRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerConfig"
+          description: '`ServerConfig`'
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+      summary: Update a server config
+      tags:
+      - ServerConfig
+  /v1/server-configs/{serverConfig}/services/start:
+    post:
+      operationId: startServersForServerConfig
+      parameters:
+      - description: The server config ID
+        explode: false
+        in: path
+        name: serverConfig
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Start all services related to a specific server config
+      tags:
+      - ServerConfig
+  /v1/server-configs/{serverConfig}/services/stop:
+    post:
+      operationId: stopServersForServerConfig
+      parameters:
+      - description: The server config ID
+        explode: false
+        in: path
+        name: serverConfig
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "202":
+          description: ""
+        "404":
+          $ref: "#/components/responses/ModelNotFoundException"
+        "403":
+          $ref: "#/components/responses/AuthorizationException"
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+      summary: Stop all services related to a specific server config
+      tags:
+      - ServerConfig
+  /v1/binaries/steam/launchers:
+    get:
+      operationId: steamGetLauncher
+      parameters:
+      - description: The steamworks app id
+        explode: true
+        in: query
+        name: appId
+        required: true
+        schema:
+          type: integer
+        style: form
+      - description: The operating system of the binary
+        explode: true
+        in: query
+        name: os
+        required: false
+        schema:
+          $ref: "#/components/schemas/OperatingSystem"
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/SteamLauncher"
+                type: array
+          description: Array of `SteamLauncher`
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+      summary: "Get launchers for a specific steamworks app ID, optionally filtered\
+        \ by OS"
+      tags:
+      - Steam
+  /v1/binaries/steam/branches:
+    get:
+      operationId: steamGetBranches
+      parameters:
+      - description: The steamworks app id
+        explode: true
+        in: query
+        name: appId
+        required: true
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/SteamBranch"
+                type: array
+          description: Array of `SteamBranch`
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+      summary: Get branches for a specific steamworks app ID
+      tags:
+      - Steam
+  /v1/templates/apps/palworld:
+    post:
+      operationId: template.app.palworld.store
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StorePalworldTemplateRequest"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/App"
+          description: '`App`'
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+      summary: Create a Palworld template app
+      tags:
+      - Templates
+      - TemplateApp
+  /v1/templates/apps/minecraft:
+    post:
+      operationId: template.app.minecraft.store
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreMinecraftTemplateRequest"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/App"
+          description: '`App`'
+        "401":
+          $ref: "#/components/responses/AuthenticationException"
+        "422":
+          $ref: "#/components/responses/ValidationException"
+      summary: Create a Minecraft template app
+      tags:
+      - Templates
+      - TemplateApp
+components:
+  responses:
+    ModelNotFoundException:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/inline_object"
+      description: Not found
+    AuthorizationException:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/inline_object"
+      description: Authorization error
+    AuthenticationException:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/inline_object"
+      description: Unauthenticated
+    ValidationException:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/inline_object_1"
+      description: Validation error
+  schemas:
+    App:
+      example:
+        name: name
+        inUse: true
+        id: 0
+        billingState: free
+        maintenance: true
+        statusMessage: statusMessage
+        status: ready
+      properties:
+        id:
+          description: The id of the app
+          type: integer
+        name:
+          description: The name of the app
+          type: string
+        inUse:
+          description: Indicates whether the app is currently in use
+          type: boolean
+        billingState:
+          $ref: "#/components/schemas/AppBillingState"
+        maintenance:
+          description: Indicates if the app is under maintenance
+          type: boolean
+        status:
+          $ref: "#/components/schemas/AppStatus"
+        statusMessage:
+          description: An optional status message
+          nullable: true
+          type: string
+      required:
+      - billingState
+      - id
+      - inUse
+      - maintenance
+      - name
+      - status
+      - statusMessage
+      title: App
+    AppBillingState:
+      enum:
+      - free
+      - active
+      - cancelled
+      - indie
+      title: AppBillingState
+      type: string
+    AppLocationSetting:
+      example:
+        autoScalerMin: 5
+        serverConfig:
+          secretFiles:
+          - content: content
+            target: target
+          - content: content
+            target: target
+          notes: notes
+          mounts:
+          - readOnly: true
+            target: target
+          - readOnly: true
+            target: target
+          env:
+          - variable: variable
+            type: static
+            value: value
+            key: key
+          - variable: variable
+            type: static
+            value: value
+            key: key
+          ports:
+          - name: name
+            protocols:
+            - tcp
+            - tcp
+            targetPort: 2
+          - name: name
+            protocols:
+            - tcp
+            - tcp
+            targetPort: 2
+          restartPolicy:
+            condition: none
+          command: command
+          statusMessage: statusMessage
+          args: args
+          configFiles:
+          - content: content
+            target: target
+          - content: content
+            target: target
+          appId: 3
+          binary:
+            dockerImage:
+              imageName: imageName
+              inUse: true
+              registryId: 1
+            os: windows
+            type: dockerImage
+            version: version
+            statusMessage: statusMessage
+            appId: 7
+            name: name
+            inUse: true
+            progress: 1.2315135367772556
+            steam:
+              steamAppId: 1
+              steamcmdUsername: steamcmdUsername
+              password: password
+              additionalPackages: additionalPackages
+              steamcmdPassword: steamcmdPassword
+              inUse: true
+              runtime: scout
+              headful: true
+              unpublished: true
+              branch: branch
+              command: command
+              requestLicense: true
+            id: 4
+            maintenance: true
+            status: pending
+            progressMessage: progressMessage
+          name: name
+          inUse: true
+          id: 7
+          resourcePackageSlug: resourcePackageSlug
+          maintenance: true
+          binaryId: 9
+          status: pending
+        statusMessage: statusMessage
+        serverConfigId: 1
+        autoScalerMax: 2
+        numInstances: 5
+        appId: 6
+        autoScalerEnabled: true
+        name: name
+        inUse: true
+        id: 0
+        placement:
+          constraints:
+            continent: continent
+            country: country
+            isProtected: true
+            city: city
+            cityDisplay: cityDisplay
+        maintenance: true
+        status: pending
+      properties:
+        id:
+          description: The id of the app location setting
+          type: integer
+        name:
+          description: The name of the app location setting
+          type: string
+        appId:
+          description: The app id of the app location setting
+          type: integer
+        serverConfigId:
+          description: The server config id of the app location setting
+          type: integer
+        numInstances:
+          description: The number of instances that should run at the specific location
+          type: integer
+        autoScalerEnabled:
+          description: Whether the auto scaler is enabled
+          type: boolean
+        autoScalerMin:
+          description: The minimum number of instances that should run at the specific
+            location
+          type: integer
+        autoScalerMax:
+          description: The maximum number of instances that should run at the specific
+            location
+          type: integer
+        status:
+          $ref: "#/components/schemas/AppLocationSettingStatus"
+        statusMessage:
+          description: An optional message
+          nullable: true
+          type: string
+        maintenance:
+          description: Indicates if the app location setting is under maintenance
+          type: boolean
+        inUse:
+          description: Indicates whether the app location setting is currently in
+            use
+          type: boolean
+        placement:
+          $ref: "#/components/schemas/Placement"
+        serverConfig:
+          $ref: "#/components/schemas/ServerConfig"
+      required:
+      - appId
+      - autoScalerEnabled
+      - id
+      - inUse
+      - maintenance
+      - name
+      - numInstances
+      - placement
+      - serverConfigId
+      - status
+      - statusMessage
+      title: AppLocationSetting
+    AppLocationSettingStatus:
+      enum:
+      - pending
+      - creating
+      - updating
+      - deleting
+      - upscaling
+      - downscaling
+      - error
+      - ready
+      - waiting
+      - moving
+      - cloning
+      title: AppLocationSettingStatus
+      type: string
+    AppStatus:
+      enum:
+      - ready
+      - updating
+      - deleting
+      - error
+      - waiting
+      title: AppStatus
+      type: string
+    Architecture:
+      enum:
+      - x86_64
+      title: Architecture
+      type: string
+    Auth:
+      example:
+        token: token
+      properties:
+        token:
+          description: "The authentication token, which must be used as a Bearer token\
+            \ in subsequent requests."
+          type: string
+      required:
+      - token
+      title: Auth
+    AuthRequest:
+      example:
+        password: password
+        email: email
+        sid: 1234567890ABCDEFG
+      properties:
+        email:
+          description: The email of the user
+          format: email
+          maxLength: 255
+          type: string
+        password:
+          description: The password of the user
+          type: string
+        sid:
+          description: The fusion session id of the user
+          example: 1234567890ABCDEFG
+          maxLength: 191
+          type: string
+      required:
+      - email
+      - password
+      - sid
+      title: AuthRequest
+    Backup:
+      example:
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        restoredAt: 2000-01-23T04:56:07.000+00:00
+        archiveName: archiveName
+        name: name
+      properties:
+        name:
+          description: The name of the backup
+          type: string
+        archiveName:
+          description: The name of the stored archive
+          type: string
+        createdAt:
+          description: The timestamp of the backups creation
+          format: date-time
+          type: string
+        restoredAt:
+          description: "The timestamp of when the backup was restored, null if not\
+            \ restored"
+          format: date-time
+          nullable: true
+          type: string
+      required:
+      - archiveName
+      - createdAt
+      - name
+      - restoredAt
+      title: Backup
+    BackupDownload:
+      example:
+        validUntil: 2000-01-23T04:56:07.000+00:00
+        url: https://openapi-generator.tech
+      properties:
+        url:
+          description: The url where the file is available
+          format: uri
+          type: string
+        validUntil:
+          description: After this date the link is no longer valid
+          format: date-time
+          type: string
+      required:
+      - url
+      - validUntil
+      title: BackupDownload
+    Binary:
+      example:
+        dockerImage:
+          imageName: imageName
+          inUse: true
+          registryId: 1
+        os: windows
+        type: dockerImage
+        version: version
+        statusMessage: statusMessage
+        appId: 7
+        name: name
+        inUse: true
+        progress: 1.2315135367772556
+        steam:
+          steamAppId: 1
+          steamcmdUsername: steamcmdUsername
+          password: password
+          additionalPackages: additionalPackages
+          steamcmdPassword: steamcmdPassword
+          inUse: true
+          runtime: scout
+          headful: true
+          unpublished: true
+          branch: branch
+          command: command
+          requestLicense: true
+        id: 4
+        maintenance: true
+        status: pending
+        progressMessage: progressMessage
+      properties:
+        id:
+          description: The id of the binary
+          type: integer
+        appId:
+          description: The app id of the binary
+          type: integer
+        name:
+          description: The app id of the binary
+          type: string
+        version:
+          description: The version of the binary
+          type: string
+        type:
+          $ref: "#/components/schemas/BinaryType"
+        os:
+          $ref: "#/components/schemas/OperatingSystem"
+        maintenance:
+          description: Indicates if the binary is under maintenance
+          type: boolean
+        status:
+          $ref: "#/components/schemas/BinaryStatus"
+        statusMessage:
+          description: An optional message returned by the build process
+          nullable: true
+          type: string
+        progress:
+          description: The current progress percentage of the image build (0-100).
+            Only present for binaries of type steam.
+          nullable: true
+          type: number
+        progressMessage:
+          description: A message describing the current build step. Only present for
+            binaries of type steam.
+          nullable: true
+          type: string
+        inUse:
+          description: Indicates whether the binary is currently in use
+          type: boolean
+        dockerImage:
+          $ref: "#/components/schemas/DockerImage"
+        steam:
+          $ref: "#/components/schemas/Steam"
+      required:
+      - appId
+      - id
+      - inUse
+      - maintenance
+      - name
+      - os
+      - status
+      - statusMessage
+      - type
+      - version
+      title: Binary
+    BinaryStatus:
+      enum:
+      - pending
+      - building
+      - deleting
+      - updating
+      - waiting
+      - error
+      - ready
+      title: BinaryStatus
+      type: string
+    BinaryType:
+      enum:
+      - dockerImage
+      - steam
+      title: BinaryType
+      type: string
+    ConfigFile:
+      example:
+        content: content
+        target: target
+      properties:
+        target:
+          description: The path in the container
+          type: string
+        content:
+          description: The content of the config file
+          type: string
+      required:
+      - content
+      - target
+      title: ConfigFile
+    CreateBackupDockerServiceRequest:
+      example:
+        name: name
+      properties:
+        name:
+          description: The name of the backup
+          maxLength: 255
+          type: string
+      required:
+      - name
+      title: CreateBackupDockerServiceRequest
+    CreateUpdateDockerImage:
+      example:
+        imageName: imageName
+        registryId: 6
+      properties:
+        imageName:
+          description: The name of the docker image
+          type: string
+        registryId:
+          description: The id of the registry to load the image
+          type: integer
+      required:
+      - imageName
+      - registryId
+      title: CreateUpdateDockerImage
+    CreateUpdatePlacement:
+      example:
+        constraints:
+          continent: continent
+          country: country
+          isProtected: true
+          city: city
+          cityDisplay: cityDisplay
+      properties:
+        constraints:
+          $ref: "#/components/schemas/Location"
+      required:
+      - constraints
+      title: CreateUpdatePlacement
+    CreateUpdateSteam:
+      example:
+        steamAppId: 0
+        steamcmdUsername: steamcmdUsername
+        password: password
+        additionalPackages: additionalPackages
+        steamcmdPassword: steamcmdPassword
+        runtime: scout
+        headful: true
+        unpublished: true
+        branch: branch
+        command: command
+        requestLicense: true
+      properties:
+        steamAppId:
+          description: The Steam App ID
+          type: integer
+        branch:
+          description: The branch to use
+          type: string
+        password:
+          description: The password to use
+          nullable: true
+          type: string
+        command:
+          description: The command to execute
+          type: string
+        steamcmdUsername:
+          description: The steam account username
+          nullable: true
+          type: string
+        steamcmdPassword:
+          description: The steam account password
+          nullable: true
+          type: string
+        headful:
+          description: Whether or not the binary needs a graphical interface
+          type: boolean
+        requestLicense:
+          description: Whether or not the the license agreement needs to be requested
+          type: boolean
+        runtime:
+          $ref: "#/components/schemas/SteamRuntime"
+        additionalPackages:
+          description: A space-separated list of additional packages to install
+          nullable: true
+          type: string
+        unpublished:
+          description: Whether or not the steamworks app is unpublished or published
+          type: boolean
+      required:
+      - additionalPackages
+      - branch
+      - command
+      - headful
+      - password
+      - requestLicense
+      - runtime
+      - steamAppId
+      - steamcmdPassword
+      - steamcmdUsername
+      - unpublished
+      title: CreateUpdateSteam
+    DockerImage:
+      example:
+        imageName: imageName
+        inUse: true
+        registryId: 1
+      properties:
+        imageName:
+          description: The name of the docker image
+          type: string
+        registryId:
+          description: The id of the registry to load the image
+          type: integer
+        inUse:
+          description: Indicates whether the docker image is currently in use
+          type: boolean
+      required:
+      - imageName
+      - inUse
+      - registryId
+      title: DockerImage
+    DockerRegistry:
+      example:
+        password: password
+        awsAccessKey: awsAccessKey
+        organization: true
+        name: name
+        id: 0
+        type: default
+        accessToken: accessToken
+        url: https://openapi-generator.tech
+        username: username
+        instanceUrl: https://openapi-generator.tech
+        awsSecretAccessKey: awsSecretAccessKey
+      properties:
+        id:
+          description: The ID of the registry
+          type: integer
+        type:
+          $ref: "#/components/schemas/DockerRegistryType"
+        name:
+          description: The name of the registry
+          type: string
+        username:
+          description: The username to use for authentication
+          nullable: true
+          type: string
+        password:
+          description: The password to use for authentication
+          nullable: true
+          type: string
+        url:
+          description: The URL of the registry
+          format: uri
+          type: string
+        accessToken:
+          description: The access token to use for authentication
+          nullable: true
+          type: string
+        instanceUrl:
+          description: The URL of the instance
+          format: uri
+          nullable: true
+          type: string
+        organization:
+          description: Whether or not the registry is user-owned or organization-owned
+          type: boolean
+        awsAccessKey:
+          description: AWS access key ID
+          nullable: true
+          type: string
+        awsSecretAccessKey:
+          description: AWS secret access key
+          nullable: true
+          type: string
+      required:
+      - accessToken
+      - awsAccessKey
+      - awsSecretAccessKey
+      - id
+      - instanceUrl
+      - name
+      - organization
+      - password
+      - type
+      - url
+      - username
+      title: DockerRegistry
+    DockerRegistryType:
+      enum:
+      - default
+      - gitlab
+      - github
+      - custom
+      - dockerhub
+      - azure
+      - awsecr
+      - other
+      title: DockerRegistryType
+      type: string
+    EnvironmentVariable:
+      example:
+        value: value
+        key: key
+      properties:
+        key:
+          description: The key of the environment variable
+          type: string
+        value:
+          description: The value of the environment variable
+          nullable: true
+          type: string
+      required:
+      - key
+      - value
+      title: EnvironmentVariable
+    EnvironmentVariableDefinition:
+      example:
+        variable: variable
+        type: static
+        value: value
+        key: key
+      properties:
+        type:
+          $ref: "#/components/schemas/EnvironmentVariableType"
+        key:
+          description: The key of the variable
+          type: string
+        value:
+          description: The value of the variable
+          type: string
+        variable:
+          description: The variable definition of the environment variable
+          type: string
+      required:
+      - key
+      - type
+      title: EnvironmentVariableDefinition
+    EnvironmentVariableType:
+      enum:
+      - static
+      - system
+      - port
+      title: EnvironmentVariableType
+      type: string
+    Location:
+      example:
+        continent: continent
+        country: country
+        isProtected: true
+        city: city
+        cityDisplay: cityDisplay
+      properties:
+        city:
+          description: The name of the city
+          type: string
+        cityDisplay:
+          description: The display-friendly name of the city
+          type: string
+        continent:
+          description: The continent name
+          type: string
+        country:
+          description: The country name
+          type: string
+        isProtected:
+          description: Indicates if the location is password protected
+          type: boolean
+      required:
+      - city
+      - cityDisplay
+      - continent
+      - country
+      - isProtected
+      title: Location
+    Mount:
+      example:
+        readOnly: true
+        target: target
+      properties:
+        target:
+          description: The path in the container
+          type: string
+        readOnly:
+          description: Whether this mount point is read only
+          type: boolean
+      required:
+      - readOnly
+      - target
+      title: Mount
+    Node:
+      example:
+        address: address
+        os: windows
+        architecture: x86_64
+      properties:
+        architecture:
+          $ref: "#/components/schemas/Architecture"
+        os:
+          $ref: "#/components/schemas/OperatingSystem"
+        address:
+          description: The IP address of the node
+          type: string
+      required:
+      - address
+      - architecture
+      - os
+      title: Node
+    OperatingSystem:
+      enum:
+      - windows
+      - linux
+      title: OperatingSystem
+      type: string
+    PatchMetadataRequest:
+      example:
+        metadata:
+          key: ""
+      properties:
+        metadata:
+          additionalProperties: {}
+      title: PatchMetadataRequest
+    Placement:
+      example:
+        constraints:
+          continent: continent
+          country: country
+          isProtected: true
+          city: city
+          cityDisplay: cityDisplay
+      properties:
+        constraints:
+          $ref: "#/components/schemas/Location"
+      required:
+      - constraints
+      title: Placement
+    Port:
+      example:
+        protocol: tcp
+        publishedPort: 2
+        name: name
+        targetPort: 5
+      properties:
+        name:
+          description: The name for the port.
+          type: string
+        protocol:
+          $ref: "#/components/schemas/Protocol"
+        targetPort:
+          description: The port inside the container. Incoming traffic is routed to
+            this port within the container.
+          type: integer
+        publishedPort:
+          description: "The externally published port, which allows external access.\
+            \ If `null`, the port has not yet been assigned."
+          nullable: true
+          type: integer
+      required:
+      - name
+      - protocol
+      - publishedPort
+      - targetPort
+      title: Port
+    PortDefinition:
+      example:
+        name: name
+        protocols:
+        - tcp
+        - tcp
+        targetPort: 2
+      properties:
+        name:
+          description: The name of the server config
+          type: string
+        protocols:
+          description: The protocols to expose
+          items:
+            $ref: "#/components/schemas/Protocol"
+          type: array
+        targetPort:
+          description: The port to expose
+          type: integer
+      required:
+      - name
+      - protocols
+      - targetPort
+      title: PortDefinition
+    Protocol:
+      enum:
+      - tcp
+      - udp
+      title: Protocol
+      type: string
+    ResourcePackage:
+      example:
+        memoryLimitMiB: 2.027123023002322
+        cpuLimit: 9.301444243932576
+        name: name
+        memoryLimitBytes: 3
+        memoryLimitFileSizeString: memoryLimitFileSizeString
+        id: 7
+        type: shared
+        slug: slug
+      properties:
+        id:
+          description: The id of the resource package
+          type: integer
+        name:
+          description: The name of the resource package
+          type: string
+        slug:
+          description: The slug of the resource package
+          type: string
+        type:
+          $ref: "#/components/schemas/ResourcePackageType"
+        cpuLimit:
+          description: The maximum CPU of the resource package
+          type: number
+        memoryLimitBytes:
+          description: The maximum memory in bytes of the resource package
+          format: int64
+          type: integer
+        memoryLimitMiB:
+          description: The maximum memory in mebibytes (MiB) of the resource package
+          type: number
+        memoryLimitFileSizeString:
+          description: The maximum memory in a human-readable format
+          type: string
+      required:
+      - cpuLimit
+      - id
+      - memoryLimitBytes
+      - memoryLimitFileSizeString
+      - memoryLimitMiB
+      - name
+      - slug
+      - type
+      title: ResourcePackage
+    ResourcePackageType:
+      enum:
+      - shared
+      - dedicated
+      title: ResourcePackageType
+      type: string
+    RestartPolicy:
+      example:
+        condition: none
+      properties:
+        condition:
+          $ref: "#/components/schemas/RestartPolicyCondition"
+      required:
+      - condition
+      title: RestartPolicy
+    RestartPolicyCondition:
+      enum:
+      - none
+      - any
+      - on-failure
+      title: RestartPolicyCondition
+      type: string
+    SecretFile:
+      example:
+        content: content
+        target: target
+      properties:
+        target:
+          description: The path in the container
+          type: string
+        content:
+          description: The content of the secret file
+          type: string
+      required:
+      - content
+      - target
+      title: SecretFile
+    Server:
+      example:
+        status_message: status_message
+        metadata:
+          key: ""
+        instance: 1
+        isPending: true
+        ports:
+        - protocol: tcp
+          publishedPort: 2
+          name: name
+          targetPort: 5
+        - protocol: tcp
+          publishedPort: 2
+          name: name
+          targetPort: 5
+        appLocationSettingId: 6
+        isHealthy: true
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        id: 0
+        serverConfigName: serverConfigName
+        updatedAt: 2000-01-23T04:56:07.000+00:00
+        isBackupable: true
+        isStopped: true
+        resources:
+          memoryLimitMiB: 2.027123023002322
+          cpuLimit: 9.301444243932576
+          name: name
+          memoryLimitBytes: 3
+          memoryLimitFileSizeString: memoryLimitFileSizeString
+          id: 7
+          type: shared
+          slug: slug
+        isRestorable: true
+        env:
+          key:
+            value: value
+            key: key
+        restartPolicy:
+          condition: none
+        node:
+          address: address
+          os: windows
+          architecture: x86_64
+        serverConfigId: 5
+        isNotFound: true
+        name: name
+        location:
+          continent: continent
+          country: country
+          isProtected: true
+          city: city
+          cityDisplay: cityDisplay
+        maintenance: true
+        status: status
+        backups:
+        - createdAt: 2000-01-23T04:56:07.000+00:00
+          restoredAt: 2000-01-23T04:56:07.000+00:00
+          archiveName: archiveName
+          name: name
+        - createdAt: 2000-01-23T04:56:07.000+00:00
+          restoredAt: 2000-01-23T04:56:07.000+00:00
+          archiveName: archiveName
+          name: name
+      properties:
+        id:
+          description: The ID of the service
+          type: integer
+        appLocationSettingId:
+          description: The ID of the location setting
+          type: integer
+        instance:
+          description: The ID of the instance
+          type: integer
+        serverConfigId:
+          description: The ID of the server config
+          type: integer
+        serverConfigName:
+          description: The name of the server config
+          type: string
+        name:
+          description: The name of the service
+          type: string
+        status:
+          description: The current status
+          type: string
+        status_message:
+          description: An optional message
+          nullable: true
+          type: string
+        isBackupable:
+          description: Indicates whether the service can be backed up
+          type: boolean
+        isRestorable:
+          description: Indicates whether the service can be restored
+          type: boolean
+        isPending:
+          description: Indicates whether the service is pending (not running) due
+            to insufficient resources on the node.
+          type: boolean
+        isNotFound:
+          description: Indicates whether the service is currently not found/missing
+            in the cluster.
+          type: boolean
+        isHealthy:
+          description: Indicates whether the service is currently in an overall healthy
+            state.
+          type: boolean
+        isStopped:
+          description: Indicates whether the service is currently stopped.
+          type: boolean
+        maintenance:
+          description: Indicates if the service is under maintenance
+          type: boolean
+        ports:
+          description: The port definitions of the service
+          items:
+            $ref: "#/components/schemas/Port"
+          type: array
+        env:
+          additionalProperties:
+            $ref: "#/components/schemas/EnvironmentVariable"
+          description: The environment variables of the service
+        restartPolicy:
+          $ref: "#/components/schemas/RestartPolicy"
+        node:
+          $ref: "#/components/schemas/Node"
+        location:
+          $ref: "#/components/schemas/Location"
+        resources:
+          $ref: "#/components/schemas/ResourcePackage"
+        backups:
+          description: The backups of the service
+          items:
+            $ref: "#/components/schemas/Backup"
+          type: array
+        metadata:
+          additionalProperties: {}
+          description: The metadata for the service
+        createdAt:
+          description: When the service was created
+          format: date-time
+          nullable: true
+          type: string
+        updatedAt:
+          description: When the service was last updated
+          format: date-time
+          nullable: true
+          type: string
+      required:
+      - appLocationSettingId
+      - backups
+      - createdAt
+      - env
+      - id
+      - instance
+      - isBackupable
+      - isHealthy
+      - isNotFound
+      - isPending
+      - isRestorable
+      - isStopped
+      - location
+      - maintenance
+      - metadata
+      - name
+      - ports
+      - resources
+      - restartPolicy
+      - serverConfigId
+      - serverConfigName
+      - status
+      - status_message
+      - updatedAt
+      title: Server
+    ServerConfig:
+      example:
+        secretFiles:
+        - content: content
+          target: target
+        - content: content
+          target: target
+        notes: notes
+        mounts:
+        - readOnly: true
+          target: target
+        - readOnly: true
+          target: target
+        env:
+        - variable: variable
+          type: static
+          value: value
+          key: key
+        - variable: variable
+          type: static
+          value: value
+          key: key
+        ports:
+        - name: name
+          protocols:
+          - tcp
+          - tcp
+          targetPort: 2
+        - name: name
+          protocols:
+          - tcp
+          - tcp
+          targetPort: 2
+        restartPolicy:
+          condition: none
+        command: command
+        statusMessage: statusMessage
+        args: args
+        configFiles:
+        - content: content
+          target: target
+        - content: content
+          target: target
+        appId: 3
+        binary:
+          dockerImage:
+            imageName: imageName
+            inUse: true
+            registryId: 1
+          os: windows
+          type: dockerImage
+          version: version
+          statusMessage: statusMessage
+          appId: 7
+          name: name
+          inUse: true
+          progress: 1.2315135367772556
+          steam:
+            steamAppId: 1
+            steamcmdUsername: steamcmdUsername
+            password: password
+            additionalPackages: additionalPackages
+            steamcmdPassword: steamcmdPassword
+            inUse: true
+            runtime: scout
+            headful: true
+            unpublished: true
+            branch: branch
+            command: command
+            requestLicense: true
+          id: 4
+          maintenance: true
+          status: pending
+          progressMessage: progressMessage
+        name: name
+        inUse: true
+        id: 7
+        resourcePackageSlug: resourcePackageSlug
+        maintenance: true
+        binaryId: 9
+        status: pending
+      properties:
+        id:
+          description: The id of the server configuration
+          type: integer
+        binaryId:
+          description: The binary id of the server configuration
+          type: integer
+        appId:
+          description: The app id of the server configuration
+          type: integer
+        name:
+          description: The name of the server config
+          type: string
+        command:
+          description: The command to run in the container (overrides ENTRYPOINT of
+            the Dockerfile)
+          nullable: true
+          type: string
+        args:
+          description: The arguments to pass to the command (overrides CMD of the
+            Dockerfile)
+          nullable: true
+          type: string
+        notes:
+          description: The notes of the server config - to keep track of things and
+            to inform colleagues
+          nullable: true
+          type: string
+        status:
+          $ref: "#/components/schemas/ServerConfigStatus"
+        statusMessage:
+          description: An optional message
+          nullable: true
+          type: string
+        maintenance:
+          description: Indicates if the server config is under maintenance
+          type: boolean
+        resourcePackageSlug:
+          description: The slug of the resource package used in this server config
+          nullable: true
+          type: string
+        inUse:
+          description: Indicates whether the server config is currently in use
+          type: boolean
+        restartPolicy:
+          $ref: "#/components/schemas/RestartPolicy"
+        env:
+          description: The environment variable definitions to be used in this config
+          items:
+            $ref: "#/components/schemas/EnvironmentVariableDefinition"
+          type: array
+        mounts:
+          description: The mounts to use
+          items:
+            $ref: "#/components/schemas/Mount"
+          type: array
+        ports:
+          description: The ports to expose
+          items:
+            $ref: "#/components/schemas/PortDefinition"
+          type: array
+        configFiles:
+          description: The config files to use
+          items:
+            $ref: "#/components/schemas/ConfigFile"
+          type: array
+        secretFiles:
+          description: The secret files to use
+          items:
+            $ref: "#/components/schemas/SecretFile"
+          type: array
+        binary:
+          $ref: "#/components/schemas/Binary"
+      required:
+      - appId
+      - args
+      - binaryId
+      - command
+      - configFiles
+      - env
+      - id
+      - inUse
+      - maintenance
+      - mounts
+      - name
+      - notes
+      - ports
+      - resourcePackageSlug
+      - restartPolicy
+      - secretFiles
+      - status
+      - statusMessage
+      title: ServerConfig
+    ServerConfigStatus:
+      enum:
+      - pending
+      - creating
+      - updating
+      - deleting
+      - waiting
+      - error
+      - ready
+      title: ServerConfigStatus
+      type: string
+    ServiceLogs:
+      example:
+        logs:
+        - logs
+        - logs
+      properties:
+        logs:
+          description: The logs as an array of strings
+          items:
+            type: string
+          type: array
+      required:
+      - logs
+      title: ServiceLogs
+    SetMetadataRequest:
+      example:
+        metadata:
+          key: ""
+      properties:
+        metadata:
+          additionalProperties: {}
+      title: SetMetadataRequest
+    Steam:
+      example:
+        steamAppId: 1
+        steamcmdUsername: steamcmdUsername
+        password: password
+        additionalPackages: additionalPackages
+        steamcmdPassword: steamcmdPassword
+        inUse: true
+        runtime: scout
+        headful: true
+        unpublished: true
+        branch: branch
+        command: command
+        requestLicense: true
+      properties:
+        steamAppId:
+          description: The Steam App ID
+          type: integer
+        branch:
+          description: The branch to use
+          type: string
+        password:
+          description: The password to use
+          nullable: true
+          type: string
+        command:
+          description: The command to execute
+          type: string
+        steamcmdUsername:
+          description: The steam account username
+          nullable: true
+          type: string
+        steamcmdPassword:
+          description: The steam account password
+          nullable: true
+          type: string
+        headful:
+          description: Whether or not the binary needs a graphical interface
+          type: boolean
+        requestLicense:
+          description: Whether or not the the license agreement needs to be requested
+          type: boolean
+        runtime:
+          $ref: "#/components/schemas/SteamRuntime"
+        additionalPackages:
+          description: A space-separated list of additional packages to install
+          nullable: true
+          type: string
+        unpublished:
+          description: Whether or not the steamworks app is unpublished or published
+          type: boolean
+        inUse:
+          description: Indicates whether the steam binary is currently in use
+          type: boolean
+      required:
+      - additionalPackages
+      - branch
+      - command
+      - headful
+      - inUse
+      - password
+      - requestLicense
+      - runtime
+      - steamAppId
+      - steamcmdPassword
+      - steamcmdUsername
+      - unpublished
+      title: Steam
+    SteamBranch:
+      example:
+        pwdrequired: true
+        name: name
+        description: description
+        buildid: 0
+        timeupdated: 6
+      properties:
+        name:
+          description: The name of the branch
+          type: string
+        buildid:
+          description: The unique identifier for the build
+          nullable: true
+          type: integer
+        pwdrequired:
+          description: Indicates whether a password is required
+          nullable: true
+          type: boolean
+        description:
+          description: A brief description of the build
+          nullable: true
+          type: string
+        timeupdated:
+          description: Last updated timestamp (in Unix epoch format)
+          nullable: true
+          type: integer
+      required:
+      - buildid
+      - description
+      - name
+      - pwdrequired
+      - timeupdated
+      title: SteamBranch
+    SteamLauncher:
+      example:
+        oslist: oslist
+        betakey: betakey
+        osarch: osarch
+        description: description
+        arguments: arguments
+        realm: realm
+        executable: executable
+      properties:
+        executable:
+          description: The executable path
+          type: string
+        arguments:
+          description: The arguments for the executable
+          nullable: true
+          type: string
+        osarch:
+          description: The OS architecture of the executable
+          nullable: true
+          type: string
+        oslist:
+          description: The OS of the executable
+          nullable: true
+          type: string
+        realm:
+          description: The realm of the executable
+          nullable: true
+          type: string
+        betakey:
+          description: The beta key of the executable
+          nullable: true
+          type: string
+        description:
+          description: The description of the executable
+          nullable: true
+          type: string
+      required:
+      - arguments
+      - betakey
+      - description
+      - executable
+      - osarch
+      - oslist
+      - realm
+      title: SteamLauncher
+    SteamRuntime:
+      enum:
+      - scout
+      - soldier
+      - sniper
+      title: SteamRuntime
+      type: string
+    StoreAppLocationSettingRequest:
+      example:
+        serverConfigId: 0
+        password: password
+        numInstances: 1
+        name: name
+        placement:
+          constraints:
+            continent: continent
+            country: country
+            isProtected: true
+            city: city
+            cityDisplay: cityDisplay
+      properties:
+        name:
+          description: The name of the location setting
+          maxLength: 255
+          type: string
+        serverConfigId:
+          description: The id of the server configuration that should be deployed
+          type: integer
+        numInstances:
+          description: The number of instances that should run at the specific location
+          minimum: 1
+          type: integer
+        placement:
+          $ref: "#/components/schemas/CreateUpdatePlacement"
+        password:
+          description: |-
+            Password required to deploy services to a protected node location.
+            Required when the selected location is password-protected.
+          nullable: true
+          type: string
+      required:
+      - name
+      - numInstances
+      - serverConfigId
+      title: StoreAppLocationSettingRequest
+    StoreAppRequest:
+      example:
+        name: name
+      properties:
+        name:
+          description: The name of the app
+          maxLength: 255
+          type: string
+      required:
+      - name
+      title: StoreAppRequest
+    StoreBinaryRequest:
+      example:
+        dockerImage:
+          imageName: imageName
+          registryId: 6
+        os: windows
+        name: name
+        steam:
+          steamAppId: 0
+          steamcmdUsername: steamcmdUsername
+          password: password
+          additionalPackages: additionalPackages
+          steamcmdPassword: steamcmdPassword
+          runtime: scout
+          headful: true
+          unpublished: true
+          branch: branch
+          command: command
+          requestLicense: true
+        type: dockerImage
+        version: version
+      properties:
+        name:
+          description: The name of the binary
+          maxLength: 255
+          type: string
+        version:
+          description: The version of the binary
+          maxLength: 255
+          type: string
+        type:
+          $ref: "#/components/schemas/BinaryType"
+        os:
+          $ref: "#/components/schemas/OperatingSystem"
+        steam:
+          $ref: "#/components/schemas/CreateUpdateSteam"
+        dockerImage:
+          $ref: "#/components/schemas/CreateUpdateDockerImage"
+      required:
+      - name
+      - os
+      - type
+      - version
+      title: StoreBinaryRequest
+    StoreDockerRegistryRequest:
+      example:
+        password: password
+        awsAccessKey: awsAccessKey
+        organization: true
+        name: name
+        type: default
+        accessToken: accessToken
+        url: https://openapi-generator.tech
+        instanceUrl: https://openapi-generator.tech
+        username: username
+        awsSecretAccessKey: awsSecretAccessKey
+      properties:
+        type:
+          $ref: "#/components/schemas/DockerRegistryType"
+        name:
+          description: The name of the docker registry
+          maxLength: 255
+          type: string
+        url:
+          description: The URL of the docker registry
+          format: uri
+          maxLength: 255
+          nullable: true
+          type: string
+        instanceUrl:
+          description: The specific instance URL of the docker registry
+          format: uri
+          maxLength: 255
+          nullable: true
+          type: string
+        username:
+          description: The username to use for authentication
+          maxLength: 255
+          nullable: true
+          type: string
+        accessToken:
+          description: The access token to use for authentication
+          nullable: true
+          type: string
+        password:
+          description: The password to use for authentication
+          nullable: true
+          type: string
+        organization:
+          description: Whether or not the registry is user-owned or organization-owned
+          type: boolean
+        awsAccessKey:
+          description: The AWS access key to use for authentication
+          maxLength: 255
+          nullable: true
+          type: string
+        awsSecretAccessKey:
+          description: The AWS secret access key to use for authentication
+          maxLength: 255
+          nullable: true
+          type: string
+      required:
+      - name
+      - type
+      title: StoreDockerRegistryRequest
+    StoreMinecraftTemplateRequest:
+      example:
+        password: password
+        appName: appName
+        placement:
+          constraints:
+            continent: continent
+            country: country
+            isProtected: true
+            city: city
+            cityDisplay: cityDisplay
+        resourcePackageSlug: resourcePackageSlug
+      properties:
+        appName:
+          description: |-
+            The name of the template app.
+            If omitted, a default name will be used.
+          nullable: true
+          type: string
+        resourcePackageSlug:
+          description: |-
+            The slug of the resource package.
+            If omitted, a default resource package will be used.
+          maxLength: 255
+          nullable: true
+          type: string
+        placement:
+          $ref: "#/components/schemas/CreateUpdatePlacement"
+        password:
+          description: |-
+            Password required to deploy services to a protected node location.
+            Required when the selected location is password-protected.
+          nullable: true
+          type: string
+      title: StoreMinecraftTemplateRequest
+    StorePalworldTemplateRequest:
+      example:
+        password: password
+        appName: appName
+        placement:
+          constraints:
+            continent: continent
+            country: country
+            isProtected: true
+            city: city
+            cityDisplay: cityDisplay
+        resourcePackageSlug: resourcePackageSlug
+      properties:
+        appName:
+          description: |-
+            The name of the template app.
+            If omitted, a default name will be used.
+          nullable: true
+          type: string
+        resourcePackageSlug:
+          description: |-
+            The slug of the resource package.
+            If omitted, a default resource package will be used.
+          maxLength: 255
+          nullable: true
+          type: string
+        placement:
+          $ref: "#/components/schemas/CreateUpdatePlacement"
+        password:
+          description: |-
+            Password required to deploy services to a protected location.
+            Only required when the selected location is password-protected.
+          nullable: true
+          type: string
+      title: StorePalworldTemplateRequest
+    StoreServerConfigRequest:
+      example:
+        args: /usr/local/etc/enshrouded/bootstrap
+        secretFiles:
+        - content: content
+          target: target
+        - content: content
+          target: target
+        notes: notes
+        configFiles:
+        - content: content
+          target: target
+        - content: content
+          target: target
+        name: name
+        mounts:
+        - readOnly: true
+          target: target
+        - readOnly: true
+          target: target
+        resourcePackageSlug: resourcePackageSlug
+        env:
+        - variable: variable
+          type: static
+          value: value
+          key: key
+        - variable: variable
+          type: static
+          value: value
+          key: key
+        ports:
+        - name: name
+          protocols:
+          - tcp
+          - tcp
+          targetPort: 2
+        - name: name
+          protocols:
+          - tcp
+          - tcp
+          targetPort: 2
+        restartPolicy:
+          condition: none
+        command: command
+        binaryId: 0
+      properties:
+        name:
+          description: The name of the server configuration
+          maxLength: 255
+          type: string
+        args:
+          description: The arguments to pass to the command (overrides CMD of the
+            Dockerfile)
+          example: /usr/local/etc/enshrouded/bootstrap
+          maxLength: 255
+          nullable: true
+          type: string
+        command:
+          description: The command to run in the container (overrides ENTRYPOINT of
+            the Dockerfile)
+          maxLength: 255
+          nullable: true
+          type: string
+        notes:
+          description: The notes of the server config - to keep track of things and
+            to inform colleagues
+          maxLength: 255
+          nullable: true
+          type: string
+        binaryId:
+          description: The binary id of the server configuration
+          type: integer
+        resourcePackageSlug:
+          description: The slug of the resource package
+          maxLength: 255
+          type: string
+        configFiles:
+          description: The config files used in this server configuration
+          items:
+            $ref: "#/components/schemas/ConfigFile"
+          type: array
+        secretFiles:
+          description: The secret files used in this server configuration
+          items:
+            $ref: "#/components/schemas/SecretFile"
+          type: array
+        restartPolicy:
+          $ref: "#/components/schemas/RestartPolicy"
+        env:
+          description: The environment variables used in this server configuration
+          items:
+            $ref: "#/components/schemas/EnvironmentVariableDefinition"
+          type: array
+        mounts:
+          description: The mounts used in this server configuration
+          items:
+            $ref: "#/components/schemas/Mount"
+          type: array
+        ports:
+          description: The port definitions
+          items:
+            $ref: "#/components/schemas/PortDefinition"
+          type: array
+      required:
+      - binaryId
+      - name
+      - resourcePackageSlug
+      title: StoreServerConfigRequest
+    TaggedImage:
+      example:
+        name: name
+        location: location
+        tag: tag
+        repository: repository
+      properties:
+        name:
+          description: The name of the docker image including the tag.
+          type: string
+        tag:
+          description: The tag of the docker image.
+          type: string
+        repository:
+          description: The name of the repository.
+          type: string
+        location:
+          description: The location URI of the tagged docker image.
+          type: string
+      required:
+      - location
+      - name
+      - repository
+      - tag
+      title: TaggedImage
+    TaggedImageMetaData:
+      example:
+        cached: true
+        cached_at: cached_at
+      properties:
+        cached:
+          description: Whether the data was retrieved from the cache.
+          type: boolean
+        cached_at:
+          description: Timestamp of when the data was last cached.
+          nullable: true
+          type: string
+      required:
+      - cached
+      - cached_at
+      title: TaggedImageMetaData
+    UpdateAppLocationSettingRequest:
+      example:
+        numInstances: 1
+        name: name
+      properties:
+        name:
+          description: The name of the location setting
+          maxLength: 255
+          type: string
+        numInstances:
+          description: The number of instances that should run at the specific location
+          minimum: 1
+          type: integer
+      required:
+      - name
+      - numInstances
+      title: UpdateAppLocationSettingRequest
+    UpdateAppRequest:
+      example:
+        name: name
+      properties:
+        name:
+          description: The name of the app
+          maxLength: 255
+          type: string
+      required:
+      - name
+      title: UpdateAppRequest
+    UpdateBinaryRequest:
+      example:
+        dockerImage:
+          imageName: imageName
+          registryId: 6
+        os: windows
+        name: name
+        steam:
+          steamAppId: 0
+          steamcmdUsername: steamcmdUsername
+          password: password
+          additionalPackages: additionalPackages
+          steamcmdPassword: steamcmdPassword
+          runtime: scout
+          headful: true
+          unpublished: true
+          branch: branch
+          command: command
+          requestLicense: true
+        type: dockerImage
+        version: version
+      properties:
+        name:
+          description: The name of the binary
+          maxLength: 255
+          type: string
+        version:
+          description: The version of the binary
+          maxLength: 255
+          type: string
+        type:
+          $ref: "#/components/schemas/BinaryType"
+        os:
+          $ref: "#/components/schemas/OperatingSystem"
+        steam:
+          $ref: "#/components/schemas/CreateUpdateSteam"
+        dockerImage:
+          $ref: "#/components/schemas/CreateUpdateDockerImage"
+      required:
+      - name
+      - os
+      - type
+      - version
+      title: UpdateBinaryRequest
+    UpdateDockerRegistryRequest:
+      example:
+        password: password
+        awsAccessKey: awsAccessKey
+        organization: true
+        name: name
+        type: default
+        accessToken: accessToken
+        url: https://openapi-generator.tech
+        instanceUrl: https://openapi-generator.tech
+        username: username
+        awsSecretAccessKey: awsSecretAccessKey
+      properties:
+        type:
+          $ref: "#/components/schemas/DockerRegistryType"
+        name:
+          description: The name of the docker registry
+          maxLength: 255
+          type: string
+        url:
+          description: The URL of the docker registry
+          format: uri
+          maxLength: 255
+          nullable: true
+          type: string
+        instanceUrl:
+          description: The URL of the gitlab instance
+          format: uri
+          maxLength: 255
+          nullable: true
+          type: string
+        username:
+          description: The username to use for authentication
+          maxLength: 255
+          nullable: true
+          type: string
+        accessToken:
+          description: The access token to use for authentication
+          nullable: true
+          type: string
+        password:
+          description: The password to use for authentication
+          nullable: true
+          type: string
+        organization:
+          description: Whether or not the registry is user-owned or organization-owned
+          type: boolean
+        awsAccessKey:
+          description: The AWS access key to use for authentication
+          maxLength: 255
+          nullable: true
+          type: string
+        awsSecretAccessKey:
+          description: The AWS secret access key to use for authentication
+          maxLength: 255
+          nullable: true
+          type: string
+      required:
+      - name
+      - type
+      title: UpdateDockerRegistryRequest
+    UpdateServerConfigRequest:
+      example:
+        args: /usr/local/etc/enshrouded/bootstrap
+        secretFiles:
+        - content: content
+          target: target
+        - content: content
+          target: target
+        notes: notes
+        configFiles:
+        - content: content
+          target: target
+        - content: content
+          target: target
+        name: name
+        mounts:
+        - readOnly: true
+          target: target
+        - readOnly: true
+          target: target
+        resourcePackageSlug: resourcePackageSlug
+        env:
+        - variable: variable
+          type: static
+          value: value
+          key: key
+        - variable: variable
+          type: static
+          value: value
+          key: key
+        ports:
+        - name: name
+          protocols:
+          - tcp
+          - tcp
+          targetPort: 2
+        - name: name
+          protocols:
+          - tcp
+          - tcp
+          targetPort: 2
+        restartPolicy:
+          condition: none
+        command: command
+        binaryId: 0
+      properties:
+        name:
+          description: The name of the server configuration
+          maxLength: 255
+          type: string
+        args:
+          description: The arguments to pass to the command (overrides CMD of the
+            Dockerfile)
+          example: /usr/local/etc/enshrouded/bootstrap
+          maxLength: 255
+          nullable: true
+          type: string
+        command:
+          description: The command to run in the container (overrides ENTRYPOINT of
+            the Dockerfile)
+          maxLength: 255
+          nullable: true
+          type: string
+        notes:
+          description: The notes of the server config - to keep track of things and
+            to inform colleagues
+          maxLength: 255
+          nullable: true
+          type: string
+        binaryId:
+          description: The binary id of the server configuration
+          type: integer
+        resourcePackageSlug:
+          description: The slug of the resource package
+          maxLength: 255
+          type: string
+        configFiles:
+          description: The config files used in this server configuration
+          items:
+            $ref: "#/components/schemas/ConfigFile"
+          type: array
+        secretFiles:
+          description: The secret files used in this server configuration
+          items:
+            $ref: "#/components/schemas/SecretFile"
+          type: array
+        restartPolicy:
+          $ref: "#/components/schemas/RestartPolicy"
+        env:
+          description: The environment variables used in this server configuration
+          items:
+            $ref: "#/components/schemas/EnvironmentVariableDefinition"
+          type: array
+        mounts:
+          description: The mounts used in this server configuration
+          items:
+            $ref: "#/components/schemas/Mount"
+          type: array
+        ports:
+          description: The port definitions
+          items:
+            $ref: "#/components/schemas/PortDefinition"
+          type: array
+      required:
+      - binaryId
+      - name
+      - resourcePackageSlug
+      title: UpdateServerConfigRequest
+    Wallet:
+      example:
+        balance: 6.027456183070403
+        rechargeAmount: 5.962133916683182
+        scope: user
+        initialBalance: 1.4658129805029452
+        rechargeAt: 2000-01-23T04:56:07.000+00:00
+        currency:
+          code: code
+          name: name
+        id: 0
+        updatedAt: 2000-01-23T04:56:07.000+00:00
+      properties:
+        id:
+          description: The id of the wallet.
+          type: integer
+        balance:
+          description: The balance of the wallet.
+          type: number
+        scope:
+          $ref: "#/components/schemas/WalletScope"
+        initialBalance:
+          description: The initial balance of the wallet.
+          type: number
+        rechargeAmount:
+          description: The recharge amount or null if none.
+          nullable: true
+          type: number
+        rechargeAt:
+          description: Next recharge date or null if none.
+          format: date-time
+          nullable: true
+          type: string
+        updatedAt:
+          description: When the wallet was last updated.
+          format: date-time
+          type: string
+        currency:
+          $ref: "#/components/schemas/WalletCurrency"
+      required:
+      - balance
+      - currency
+      - id
+      - initialBalance
+      - rechargeAmount
+      - rechargeAt
+      - scope
+      - updatedAt
+      title: Wallet
+    WalletCurrency:
+      example:
+        code: code
+        name: name
+      properties:
+        code:
+          description: "Unique code, e.g. 'CPUH'"
+          type: string
+        name:
+          description: "Human-readable currency name, e.g. 'CPU-hours'"
+          type: string
+      required:
+      - code
+      - name
+      title: WalletCurrency
+    WalletCurrencyCode:
+      enum:
+      - CPUH
+      - CPUH_INDIE
+      - RAMH
+      - RAMH_INDIE
+      - EUR
+      title: WalletCurrencyCode
+      type: string
+    WalletScope:
+      enum:
+      - user
+      - app
+      title: WalletScope
+      type: string
+    getAppLocationSettings_200_response_links:
+      example:
+        next: next
+        last: last
+        prev: prev
+        first: first
+      properties:
+        first:
+          nullable: true
+          type: string
+        last:
+          nullable: true
+          type: string
+        prev:
+          nullable: true
+          type: string
+        next:
+          nullable: true
+          type: string
+      required:
+      - first
+      - last
+      - next
+      - prev
+    getAppLocationSettings_200_response_meta_links_inner:
+      example:
+        active: true
+        label: label
+        page: 5
+        url: url
+      properties:
+        url:
+          nullable: true
+          type: string
+        label:
+          type: string
+        active:
+          type: boolean
+        page:
+          nullable: true
+          type: integer
+      required:
+      - active
+      - label
+      - page
+      - url
+    getAppLocationSettings_200_response_meta:
+      example:
+        path: path
+        per_page: 5
+        total: 7
+        last_page: 1
+        from: 6
+        links:
+        - active: true
+          label: label
+          page: 5
+          url: url
+        - active: true
+          label: label
+          page: 5
+          url: url
+        to: 2
+        current_page: 0
+      properties:
+        current_page:
+          type: integer
+        from:
+          nullable: true
+          type: integer
+        last_page:
+          type: integer
+        links:
+          description: Generated paginator links.
+          items:
+            $ref: "#/components/schemas/getAppLocationSettings_200_response_meta_links_inner"
+          type: array
+        path:
+          description: Base path for paginator generated URLs.
+          nullable: true
+          type: string
+        per_page:
+          description: Number of items shown per page.
+          type: integer
+        to:
+          description: Number of the last item in the slice.
+          nullable: true
+          type: integer
+        total:
+          description: Total number of items being paginated.
+          type: integer
+      required:
+      - current_page
+      - from
+      - last_page
+      - links
+      - path
+      - per_page
+      - to
+      - total
+    getAppLocationSettings_200_response:
+      example:
+        data:
+        - autoScalerMin: 5
+          serverConfig:
+            secretFiles:
+            - content: content
+              target: target
+            - content: content
+              target: target
+            notes: notes
+            mounts:
+            - readOnly: true
+              target: target
+            - readOnly: true
+              target: target
+            env:
+            - variable: variable
+              type: static
+              value: value
+              key: key
+            - variable: variable
+              type: static
+              value: value
+              key: key
+            ports:
+            - name: name
+              protocols:
+              - tcp
+              - tcp
+              targetPort: 2
+            - name: name
+              protocols:
+              - tcp
+              - tcp
+              targetPort: 2
+            restartPolicy:
+              condition: none
+            command: command
+            statusMessage: statusMessage
+            args: args
+            configFiles:
+            - content: content
+              target: target
+            - content: content
+              target: target
+            appId: 3
+            binary:
+              dockerImage:
+                imageName: imageName
+                inUse: true
+                registryId: 1
+              os: windows
+              type: dockerImage
+              version: version
+              statusMessage: statusMessage
+              appId: 7
+              name: name
+              inUse: true
+              progress: 1.2315135367772556
+              steam:
+                steamAppId: 1
+                steamcmdUsername: steamcmdUsername
+                password: password
+                additionalPackages: additionalPackages
+                steamcmdPassword: steamcmdPassword
+                inUse: true
+                runtime: scout
+                headful: true
+                unpublished: true
+                branch: branch
+                command: command
+                requestLicense: true
+              id: 4
+              maintenance: true
+              status: pending
+              progressMessage: progressMessage
+            name: name
+            inUse: true
+            id: 7
+            resourcePackageSlug: resourcePackageSlug
+            maintenance: true
+            binaryId: 9
+            status: pending
+          statusMessage: statusMessage
+          serverConfigId: 1
+          autoScalerMax: 2
+          numInstances: 5
+          appId: 6
+          autoScalerEnabled: true
+          name: name
+          inUse: true
+          id: 0
+          placement:
+            constraints:
+              continent: continent
+              country: country
+              isProtected: true
+              city: city
+              cityDisplay: cityDisplay
+          maintenance: true
+          status: pending
+        - autoScalerMin: 5
+          serverConfig:
+            secretFiles:
+            - content: content
+              target: target
+            - content: content
+              target: target
+            notes: notes
+            mounts:
+            - readOnly: true
+              target: target
+            - readOnly: true
+              target: target
+            env:
+            - variable: variable
+              type: static
+              value: value
+              key: key
+            - variable: variable
+              type: static
+              value: value
+              key: key
+            ports:
+            - name: name
+              protocols:
+              - tcp
+              - tcp
+              targetPort: 2
+            - name: name
+              protocols:
+              - tcp
+              - tcp
+              targetPort: 2
+            restartPolicy:
+              condition: none
+            command: command
+            statusMessage: statusMessage
+            args: args
+            configFiles:
+            - content: content
+              target: target
+            - content: content
+              target: target
+            appId: 3
+            binary:
+              dockerImage:
+                imageName: imageName
+                inUse: true
+                registryId: 1
+              os: windows
+              type: dockerImage
+              version: version
+              statusMessage: statusMessage
+              appId: 7
+              name: name
+              inUse: true
+              progress: 1.2315135367772556
+              steam:
+                steamAppId: 1
+                steamcmdUsername: steamcmdUsername
+                password: password
+                additionalPackages: additionalPackages
+                steamcmdPassword: steamcmdPassword
+                inUse: true
+                runtime: scout
+                headful: true
+                unpublished: true
+                branch: branch
+                command: command
+                requestLicense: true
+              id: 4
+              maintenance: true
+              status: pending
+              progressMessage: progressMessage
+            name: name
+            inUse: true
+            id: 7
+            resourcePackageSlug: resourcePackageSlug
+            maintenance: true
+            binaryId: 9
+            status: pending
+          statusMessage: statusMessage
+          serverConfigId: 1
+          autoScalerMax: 2
+          numInstances: 5
+          appId: 6
+          autoScalerEnabled: true
+          name: name
+          inUse: true
+          id: 0
+          placement:
+            constraints:
+              continent: continent
+              country: country
+              isProtected: true
+              city: city
+              cityDisplay: cityDisplay
+          maintenance: true
+          status: pending
+        meta:
+          path: path
+          per_page: 5
+          total: 7
+          last_page: 1
+          from: 6
+          links:
+          - active: true
+            label: label
+            page: 5
+            url: url
+          - active: true
+            label: label
+            page: 5
+            url: url
+          to: 2
+          current_page: 0
+        links:
+          next: next
+          last: last
+          prev: prev
+          first: first
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/AppLocationSetting"
+          type: array
+        links:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_links"
+        meta:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_meta"
+      required:
+      - data
+      - links
+      - meta
+    getApps_200_response:
+      example:
+        data:
+        - name: name
+          inUse: true
+          id: 0
+          billingState: free
+          maintenance: true
+          statusMessage: statusMessage
+          status: ready
+        - name: name
+          inUse: true
+          id: 0
+          billingState: free
+          maintenance: true
+          statusMessage: statusMessage
+          status: ready
+        meta:
+          path: path
+          per_page: 5
+          total: 7
+          last_page: 1
+          from: 6
+          links:
+          - active: true
+            label: label
+            page: 5
+            url: url
+          - active: true
+            label: label
+            page: 5
+            url: url
+          to: 2
+          current_page: 0
+        links:
+          next: next
+          last: last
+          prev: prev
+          first: first
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/App"
+          type: array
+        links:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_links"
+        meta:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_meta"
+      required:
+      - data
+      - links
+      - meta
+    getAppWallets_200_response:
+      example:
+        data:
+        - balance: 6.027456183070403
+          rechargeAmount: 5.962133916683182
+          scope: user
+          initialBalance: 1.4658129805029452
+          rechargeAt: 2000-01-23T04:56:07.000+00:00
+          currency:
+            code: code
+            name: name
+          id: 0
+          updatedAt: 2000-01-23T04:56:07.000+00:00
+        - balance: 6.027456183070403
+          rechargeAmount: 5.962133916683182
+          scope: user
+          initialBalance: 1.4658129805029452
+          rechargeAt: 2000-01-23T04:56:07.000+00:00
+          currency:
+            code: code
+            name: name
+          id: 0
+          updatedAt: 2000-01-23T04:56:07.000+00:00
+        meta:
+          path: path
+          per_page: 5
+          total: 7
+          last_page: 1
+          from: 6
+          links:
+          - active: true
+            label: label
+            page: 5
+            url: url
+          - active: true
+            label: label
+            page: 5
+            url: url
+          to: 2
+          current_page: 0
+        links:
+          next: next
+          last: last
+          prev: prev
+          first: first
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/Wallet"
+          type: array
+        links:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_links"
+        meta:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_meta"
+      required:
+      - data
+      - links
+      - meta
+    getBinaries_200_response:
+      example:
+        data:
+        - dockerImage:
+            imageName: imageName
+            inUse: true
+            registryId: 1
+          os: windows
+          type: dockerImage
+          version: version
+          statusMessage: statusMessage
+          appId: 7
+          name: name
+          inUse: true
+          progress: 1.2315135367772556
+          steam:
+            steamAppId: 1
+            steamcmdUsername: steamcmdUsername
+            password: password
+            additionalPackages: additionalPackages
+            steamcmdPassword: steamcmdPassword
+            inUse: true
+            runtime: scout
+            headful: true
+            unpublished: true
+            branch: branch
+            command: command
+            requestLicense: true
+          id: 4
+          maintenance: true
+          status: pending
+          progressMessage: progressMessage
+        - dockerImage:
+            imageName: imageName
+            inUse: true
+            registryId: 1
+          os: windows
+          type: dockerImage
+          version: version
+          statusMessage: statusMessage
+          appId: 7
+          name: name
+          inUse: true
+          progress: 1.2315135367772556
+          steam:
+            steamAppId: 1
+            steamcmdUsername: steamcmdUsername
+            password: password
+            additionalPackages: additionalPackages
+            steamcmdPassword: steamcmdPassword
+            inUse: true
+            runtime: scout
+            headful: true
+            unpublished: true
+            branch: branch
+            command: command
+            requestLicense: true
+          id: 4
+          maintenance: true
+          status: pending
+          progressMessage: progressMessage
+        meta:
+          path: path
+          per_page: 5
+          total: 7
+          last_page: 1
+          from: 6
+          links:
+          - active: true
+            label: label
+            page: 5
+            url: url
+          - active: true
+            label: label
+            page: 5
+            url: url
+          to: 2
+          current_page: 0
+        links:
+          next: next
+          last: last
+          prev: prev
+          first: first
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/Binary"
+          type: array
+        links:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_links"
+        meta:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_meta"
+      required:
+      - data
+      - links
+      - meta
+    getServers_200_response:
+      example:
+        data:
+        - status_message: status_message
+          metadata:
+            key: ""
+          instance: 1
+          isPending: true
+          ports:
+          - protocol: tcp
+            publishedPort: 2
+            name: name
+            targetPort: 5
+          - protocol: tcp
+            publishedPort: 2
+            name: name
+            targetPort: 5
+          appLocationSettingId: 6
+          isHealthy: true
+          createdAt: 2000-01-23T04:56:07.000+00:00
+          id: 0
+          serverConfigName: serverConfigName
+          updatedAt: 2000-01-23T04:56:07.000+00:00
+          isBackupable: true
+          isStopped: true
+          resources:
+            memoryLimitMiB: 2.027123023002322
+            cpuLimit: 9.301444243932576
+            name: name
+            memoryLimitBytes: 3
+            memoryLimitFileSizeString: memoryLimitFileSizeString
+            id: 7
+            type: shared
+            slug: slug
+          isRestorable: true
+          env:
+            key:
+              value: value
+              key: key
+          restartPolicy:
+            condition: none
+          node:
+            address: address
+            os: windows
+            architecture: x86_64
+          serverConfigId: 5
+          isNotFound: true
+          name: name
+          location:
+            continent: continent
+            country: country
+            isProtected: true
+            city: city
+            cityDisplay: cityDisplay
+          maintenance: true
+          status: status
+          backups:
+          - createdAt: 2000-01-23T04:56:07.000+00:00
+            restoredAt: 2000-01-23T04:56:07.000+00:00
+            archiveName: archiveName
+            name: name
+          - createdAt: 2000-01-23T04:56:07.000+00:00
+            restoredAt: 2000-01-23T04:56:07.000+00:00
+            archiveName: archiveName
+            name: name
+        - status_message: status_message
+          metadata:
+            key: ""
+          instance: 1
+          isPending: true
+          ports:
+          - protocol: tcp
+            publishedPort: 2
+            name: name
+            targetPort: 5
+          - protocol: tcp
+            publishedPort: 2
+            name: name
+            targetPort: 5
+          appLocationSettingId: 6
+          isHealthy: true
+          createdAt: 2000-01-23T04:56:07.000+00:00
+          id: 0
+          serverConfigName: serverConfigName
+          updatedAt: 2000-01-23T04:56:07.000+00:00
+          isBackupable: true
+          isStopped: true
+          resources:
+            memoryLimitMiB: 2.027123023002322
+            cpuLimit: 9.301444243932576
+            name: name
+            memoryLimitBytes: 3
+            memoryLimitFileSizeString: memoryLimitFileSizeString
+            id: 7
+            type: shared
+            slug: slug
+          isRestorable: true
+          env:
+            key:
+              value: value
+              key: key
+          restartPolicy:
+            condition: none
+          node:
+            address: address
+            os: windows
+            architecture: x86_64
+          serverConfigId: 5
+          isNotFound: true
+          name: name
+          location:
+            continent: continent
+            country: country
+            isProtected: true
+            city: city
+            cityDisplay: cityDisplay
+          maintenance: true
+          status: status
+          backups:
+          - createdAt: 2000-01-23T04:56:07.000+00:00
+            restoredAt: 2000-01-23T04:56:07.000+00:00
+            archiveName: archiveName
+            name: name
+          - createdAt: 2000-01-23T04:56:07.000+00:00
+            restoredAt: 2000-01-23T04:56:07.000+00:00
+            archiveName: archiveName
+            name: name
+        meta:
+          path: path
+          per_page: 5
+          total: 7
+          last_page: 1
+          from: 6
+          links:
+          - active: true
+            label: label
+            page: 5
+            url: url
+          - active: true
+            label: label
+            page: 5
+            url: url
+          to: 2
+          current_page: 0
+        links:
+          next: next
+          last: last
+          prev: prev
+          first: first
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/Server"
+          type: array
+        links:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_links"
+        meta:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_meta"
+      required:
+      - data
+      - links
+      - meta
+    getDockerRegistries_200_response:
+      example:
+        data:
+        - password: password
+          awsAccessKey: awsAccessKey
+          organization: true
+          name: name
+          id: 0
+          type: default
+          accessToken: accessToken
+          url: https://openapi-generator.tech
+          username: username
+          instanceUrl: https://openapi-generator.tech
+          awsSecretAccessKey: awsSecretAccessKey
+        - password: password
+          awsAccessKey: awsAccessKey
+          organization: true
+          name: name
+          id: 0
+          type: default
+          accessToken: accessToken
+          url: https://openapi-generator.tech
+          username: username
+          instanceUrl: https://openapi-generator.tech
+          awsSecretAccessKey: awsSecretAccessKey
+        meta:
+          path: path
+          per_page: 5
+          total: 7
+          last_page: 1
+          from: 6
+          links:
+          - active: true
+            label: label
+            page: 5
+            url: url
+          - active: true
+            label: label
+            page: 5
+            url: url
+          to: 2
+          current_page: 0
+        links:
+          next: next
+          last: last
+          prev: prev
+          first: first
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/DockerRegistry"
+          type: array
+        links:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_links"
+        meta:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_meta"
+      required:
+      - data
+      - links
+      - meta
+    getTaggedImages_200_response:
+      example:
+        data:
+        - name: name
+          location: location
+          tag: tag
+          repository: repository
+        - name: name
+          location: location
+          tag: tag
+          repository: repository
+        meta:
+          cached: true
+          cached_at: cached_at
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/TaggedImage"
+          type: array
+        meta:
+          $ref: "#/components/schemas/TaggedImageMetaData"
+      required:
+      - data
+      - meta
+    getBackups_200_response:
+      example:
+        data:
+        - createdAt: 2000-01-23T04:56:07.000+00:00
+          restoredAt: 2000-01-23T04:56:07.000+00:00
+          archiveName: archiveName
+          name: name
+        - createdAt: 2000-01-23T04:56:07.000+00:00
+          restoredAt: 2000-01-23T04:56:07.000+00:00
+          archiveName: archiveName
+          name: name
+        meta:
+          path: path
+          per_page: 5
+          total: 7
+          last_page: 1
+          from: 6
+          links:
+          - active: true
+            label: label
+            page: 5
+            url: url
+          - active: true
+            label: label
+            page: 5
+            url: url
+          to: 2
+          current_page: 0
+        links:
+          next: next
+          last: last
+          prev: prev
+          first: first
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/Backup"
+          type: array
+        links:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_links"
+        meta:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_meta"
+      required:
+      - data
+      - links
+      - meta
+    getLocations_200_response:
+      example:
+        data:
+        - continent: continent
+          country: country
+          isProtected: true
+          city: city
+          cityDisplay: cityDisplay
+        - continent: continent
+          country: country
+          isProtected: true
+          city: city
+          cityDisplay: cityDisplay
+        meta:
+          path: path
+          per_page: 5
+          total: 7
+          last_page: 1
+          from: 6
+          links:
+          - active: true
+            label: label
+            page: 5
+            url: url
+          - active: true
+            label: label
+            page: 5
+            url: url
+          to: 2
+          current_page: 0
+        links:
+          next: next
+          last: last
+          prev: prev
+          first: first
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/Location"
+          type: array
+        links:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_links"
+        meta:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_meta"
+      required:
+      - data
+      - links
+      - meta
+    getResourcePackages_200_response:
+      example:
+        data:
+        - memoryLimitMiB: 2.027123023002322
+          cpuLimit: 9.301444243932576
+          name: name
+          memoryLimitBytes: 3
+          memoryLimitFileSizeString: memoryLimitFileSizeString
+          id: 7
+          type: shared
+          slug: slug
+        - memoryLimitMiB: 2.027123023002322
+          cpuLimit: 9.301444243932576
+          name: name
+          memoryLimitBytes: 3
+          memoryLimitFileSizeString: memoryLimitFileSizeString
+          id: 7
+          type: shared
+          slug: slug
+        meta:
+          path: path
+          per_page: 5
+          total: 7
+          last_page: 1
+          from: 6
+          links:
+          - active: true
+            label: label
+            page: 5
+            url: url
+          - active: true
+            label: label
+            page: 5
+            url: url
+          to: 2
+          current_page: 0
+        links:
+          next: next
+          last: last
+          prev: prev
+          first: first
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/ResourcePackage"
+          type: array
+        links:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_links"
+        meta:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_meta"
+      required:
+      - data
+      - links
+      - meta
+    getServerConfigs_200_response:
+      example:
+        data:
+        - secretFiles:
+          - content: content
+            target: target
+          - content: content
+            target: target
+          notes: notes
+          mounts:
+          - readOnly: true
+            target: target
+          - readOnly: true
+            target: target
+          env:
+          - variable: variable
+            type: static
+            value: value
+            key: key
+          - variable: variable
+            type: static
+            value: value
+            key: key
+          ports:
+          - name: name
+            protocols:
+            - tcp
+            - tcp
+            targetPort: 2
+          - name: name
+            protocols:
+            - tcp
+            - tcp
+            targetPort: 2
+          restartPolicy:
+            condition: none
+          command: command
+          statusMessage: statusMessage
+          args: args
+          configFiles:
+          - content: content
+            target: target
+          - content: content
+            target: target
+          appId: 3
+          binary:
+            dockerImage:
+              imageName: imageName
+              inUse: true
+              registryId: 1
+            os: windows
+            type: dockerImage
+            version: version
+            statusMessage: statusMessage
+            appId: 7
+            name: name
+            inUse: true
+            progress: 1.2315135367772556
+            steam:
+              steamAppId: 1
+              steamcmdUsername: steamcmdUsername
+              password: password
+              additionalPackages: additionalPackages
+              steamcmdPassword: steamcmdPassword
+              inUse: true
+              runtime: scout
+              headful: true
+              unpublished: true
+              branch: branch
+              command: command
+              requestLicense: true
+            id: 4
+            maintenance: true
+            status: pending
+            progressMessage: progressMessage
+          name: name
+          inUse: true
+          id: 7
+          resourcePackageSlug: resourcePackageSlug
+          maintenance: true
+          binaryId: 9
+          status: pending
+        - secretFiles:
+          - content: content
+            target: target
+          - content: content
+            target: target
+          notes: notes
+          mounts:
+          - readOnly: true
+            target: target
+          - readOnly: true
+            target: target
+          env:
+          - variable: variable
+            type: static
+            value: value
+            key: key
+          - variable: variable
+            type: static
+            value: value
+            key: key
+          ports:
+          - name: name
+            protocols:
+            - tcp
+            - tcp
+            targetPort: 2
+          - name: name
+            protocols:
+            - tcp
+            - tcp
+            targetPort: 2
+          restartPolicy:
+            condition: none
+          command: command
+          statusMessage: statusMessage
+          args: args
+          configFiles:
+          - content: content
+            target: target
+          - content: content
+            target: target
+          appId: 3
+          binary:
+            dockerImage:
+              imageName: imageName
+              inUse: true
+              registryId: 1
+            os: windows
+            type: dockerImage
+            version: version
+            statusMessage: statusMessage
+            appId: 7
+            name: name
+            inUse: true
+            progress: 1.2315135367772556
+            steam:
+              steamAppId: 1
+              steamcmdUsername: steamcmdUsername
+              password: password
+              additionalPackages: additionalPackages
+              steamcmdPassword: steamcmdPassword
+              inUse: true
+              runtime: scout
+              headful: true
+              unpublished: true
+              branch: branch
+              command: command
+              requestLicense: true
+            id: 4
+            maintenance: true
+            status: pending
+            progressMessage: progressMessage
+          name: name
+          inUse: true
+          id: 7
+          resourcePackageSlug: resourcePackageSlug
+          maintenance: true
+          binaryId: 9
+          status: pending
+        meta:
+          path: path
+          per_page: 5
+          total: 7
+          last_page: 1
+          from: 6
+          links:
+          - active: true
+            label: label
+            page: 5
+            url: url
+          - active: true
+            label: label
+            page: 5
+            url: url
+          to: 2
+          current_page: 0
+        links:
+          next: next
+          last: last
+          prev: prev
+          first: first
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/ServerConfig"
+          type: array
+        links:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_links"
+        meta:
+          $ref: "#/components/schemas/getAppLocationSettings_200_response_meta"
+      required:
+      - data
+      - links
+      - meta
+    inline_object:
+      example:
+        message: message
+      properties:
+        message:
+          description: Error overview.
+          type: string
+      required:
+      - message
+    inline_object_1:
+      example:
+        message: message
+        errors:
+          key:
+          - errors
+          - errors
+      properties:
+        message:
+          description: Errors overview.
+          type: string
+        errors:
+          additionalProperties:
+            items:
+              type: string
+          description: A detailed description of each field that failed validation.
+      required:
+      - errors
+      - message

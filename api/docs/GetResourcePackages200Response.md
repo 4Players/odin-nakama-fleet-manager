@@ -1,0 +1,91 @@
+# GetResourcePackages200Response
+
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**Data** | [**[]ResourcePackage**](ResourcePackage.md) |  | 
+**Links** | [**GetAppLocationSettings200ResponseLinks**](GetAppLocationSettings200ResponseLinks.md) |  | 
+**Meta** | [**GetAppLocationSettings200ResponseMeta**](GetAppLocationSettings200ResponseMeta.md) |  | 
+
+## Methods
+
+### NewGetResourcePackages200Response
+
+`func NewGetResourcePackages200Response(data []ResourcePackage, links GetAppLocationSettings200ResponseLinks, meta GetAppLocationSettings200ResponseMeta, ) *GetResourcePackages200Response`
+
+NewGetResourcePackages200Response instantiates a new GetResourcePackages200Response object
+This constructor will assign default values to properties that have it defined,
+and makes sure properties required by API are set, but the set of arguments
+will change when the set of required properties is changed
+
+### NewGetResourcePackages200ResponseWithDefaults
+
+`func NewGetResourcePackages200ResponseWithDefaults() *GetResourcePackages200Response`
+
+NewGetResourcePackages200ResponseWithDefaults instantiates a new GetResourcePackages200Response object
+This constructor will only assign default values to properties that have it defined,
+but it doesn't guarantee that properties required by API are set
+
+### GetData
+
+`func (o *GetResourcePackages200Response) GetData() []ResourcePackage`
+
+GetData returns the Data field if non-nil, zero value otherwise.
+
+### GetDataOk
+
+`func (o *GetResourcePackages200Response) GetDataOk() (*[]ResourcePackage, bool)`
+
+GetDataOk returns a tuple with the Data field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetData
+
+`func (o *GetResourcePackages200Response) SetData(v []ResourcePackage)`
+
+SetData sets Data field to given value.
+
+
+### GetLinks
+
+`func (o *GetResourcePackages200Response) GetLinks() GetAppLocationSettings200ResponseLinks`
+
+GetLinks returns the Links field if non-nil, zero value otherwise.
+
+### GetLinksOk
+
+`func (o *GetResourcePackages200Response) GetLinksOk() (*GetAppLocationSettings200ResponseLinks, bool)`
+
+GetLinksOk returns a tuple with the Links field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetLinks
+
+`func (o *GetResourcePackages200Response) SetLinks(v GetAppLocationSettings200ResponseLinks)`
+
+SetLinks sets Links field to given value.
+
+
+### GetMeta
+
+`func (o *GetResourcePackages200Response) GetMeta() GetAppLocationSettings200ResponseMeta`
+
+GetMeta returns the Meta field if non-nil, zero value otherwise.
+
+### GetMetaOk
+
+`func (o *GetResourcePackages200Response) GetMetaOk() (*GetAppLocationSettings200ResponseMeta, bool)`
+
+GetMetaOk returns a tuple with the Meta field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMeta
+
+`func (o *GetResourcePackages200Response) SetMeta(v GetAppLocationSettings200ResponseMeta)`
+
+SetMeta sets Meta field to given value.
+
+
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
